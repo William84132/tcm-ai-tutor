@@ -1,0 +1,96 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+*.pyc
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 数据库与数据
+**/data/config.json
+**/data/users.db
+**/data/rag_index.pkl
+**/data/chroma*/
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# RAG 索引缓存
+**/data/rag_index.pkl
+**/data/*.pkl
+
+# 配置文件（含 API Key）
+**/config.json
+智能AI/config.json
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志
+*.log
+logs/
+debug.log
+
+# OCR / PDF 临时文件
+**/temp/
+**/tmp/
+
+# Obsidian 配置（个人编辑器配置，不入库）
+**/.obsidian/
+
+# Trae 本地配置
+.trae/documents/
+
+# Node (若后续引入)
+node_modules/
+
+# PDF 原著（版权资料 + 超出 GitHub 100MB 限制）
+*.pdf
+*.epub
+
+# Tesseract OCR 语言包（体积大，用户可自行下载）
+tessdata/
+
+# PDF/OCR 处理脚本（临时工具，非规则文档，不入库）
+叶天士/00-原著全文/*.py
+叶天士/10-学习工具/
+
+# === 个人学习内容（不入库，GitHub 仅保留通用模板） ===
+
+# 个人学习笔记目录
+叶天士/**/笔记/
+叶天士/01-六经辨证解温病（正课）/
+叶天士/02-温病临证案例交互式问答/
+叶天士/03-温病学习反馈与漏洞追踪/
+叶天士/04-温病毕业笔记与行动清单/
+叶天士/05-温病多著知识关联与复盘/
+叶天士/06-临床医案/
+叶天士/07-温病复习/
+
+# 个人进度追踪文件
+叶天士/**/进度追踪.md
+叶天士/学习进度追踪.md
+.trae/skills/**/进度追踪.md
+
+# 个人散落笔记（根目录下的单篇笔记）
+叶天士/快速入门.md
+叶天士/清营汤.md
+叶天士/犀角地黄汤.md
+叶天士/第*课*.md
+叶天士/第*课案例*.md

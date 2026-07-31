@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金匮要略方剂六经归属分类表</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    background: #f5f0eb;
+    color: #2c2c2c;
+    padding: 0;
+    line-height: 1.75;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #2c1810 0%, #4a3428 50%, #2c1810 100%);
+    color: #f5f0eb;
+    padding: 50px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .header::before {
+    content: '金匮要略';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 160px;
+    font-weight: 700;
+    color: rgba(245, 240, 235, 0.03);
+    letter-spacing: 20px;
+    pointer-events: none;
+  }
+  
+  .header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .header .subtitle {
+    font-size: 15px;
+    opacity: 0.8;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: #fff;
+    border-bottom: 1px solid #e0d5cc;
+    padding: 18px 0;
+    flex-wrap: wrap;
+  }
+  
+  .stat-item {
+    text-align: center;
+    padding: 0 28px;
+    border-right: 1px solid #e0d5cc;
+  }
+  
+  .stat-item:last-child { border-right: none; }
+  .stat-item .num { font-size: 26px; font-weight: 700; }
+  .stat-item .label { font-size: 12px; color: #888; margin-top: 2px; }
+  .stat-item.taiyang .num { color: #d4a574; }
+  .stat-item.yangming .num { color: #c0392b; }
+  .stat-item.shaoyang .num { color: #e67e22; }
+  .stat-item.taiyin .num { color: #7f8c8d; }
+  .stat-item.shaoyin .num { color: #34495e; }
+  .stat-item.jueyin .num { color: #8e44ad; }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+  
+  .section {
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  
+  .section-header {
+    padding: 14px 20px;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #f0ebe6;
+  }
+  
+  .section-header .badge {
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 400;
+  }
+  
+  .section.taiyang .section-header { border-left: 4px solid #d4a574; }
+  .section.yangming .section-header { border-left: 4px solid #c0392b; }
+  .section.shaoyang .section-header { border-left: 4px solid #e67e22; }
+  .section.taiyin .section-header { border-left: 4px solid #7f8c8d; }
+  .section.shaoyin .section-header { border-left: 4px solid #34495e; }
+  .section.jueyin .section-header { border-left: 4px solid #8e44ad; }
+  
+  .taiyang .section-header .badge { background: #d4a574; color: #fff; }
+  .yangming .section-header .badge { background: #c0392b; color: #fff; }
+  .shaoyang .section-header .badge { background: #e67e22; color: #fff; }
+  .taiyin .section-header .badge { background: #7f8c8d; color: #fff; }
+  .shaoyin .section-header .badge { background: #34495e; color: #fff; }
+  .jueyin .section-header .badge { background: #8e44ad; color: #fff; }
+  
+  .section-header .desc {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 400;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th {
+    text-align: left;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #faf8f6;
+    border-bottom: 1px solid #f0ebe6;
+  }
+  
+  td {
+    padding: 8px 14px;
+    border-bottom: 1px solid #f5f0eb;
+    font-size: 13px;
+    vertical-align: top;
+  }
+  
+  tr:last-child td { border-bottom: none; }
+  
+  td.formula-name {
+    font-weight: 600;
+    font-family: 'Noto Serif SC', serif;
+    white-space: nowrap;
+    width: 160px;
+    font-size: 14px;
+  }
+  
+  .verified-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: #2ecc71;
+    color: #fff;
+    margin-left: 6px;
+    font-weight: 400;
+    font-family: 'Noto Sans SC', sans-serif;
+    vertical-align: middle;
+  }
+  
+  .inferred-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: #bdc3c7;
+    color: #fff;
+    margin-left: 6px;
+    font-weight: 400;
+    font-family: 'Noto Sans SC', sans-serif;
+    vertical-align: middle;
+  }
+  
+  td.formula-chapter {
+    color: #888;
+    font-size: 12px;
+    width: 200px;
+  }
+  
+  td.formula-context {
+    color: #555;
+    font-size: 12px;
+  }
+  
+  tr:hover td { background: #faf8f6; }
+  
+  .footer {
+    text-align: center;
+    padding: 30px;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+  @media (max-width: 768px) {
+    .header h1 { font-size: 22px; }
+    .header::before { font-size: 80px; }
+    .stat-item { padding: 0 12px; }
+    .stat-item .num { font-size: 20px; }
+    td.formula-chapter { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>金匮要略方剂六经归属分类表</h1>
+  <div class="subtitle">参考胡希恕六经-八纲辨证体系 · 打破《伤寒论》与《金匮要略》的界限</div>
+</div>
+<div class="stats-bar">
+  <div class="stat-item taiyang"><div class="num">28</div><div class="label">太阳（表阳证）</div></div>
+  <div class="stat-item yangming"><div class="num">27</div><div class="label">阳明（里阳证）</div></div>
+  <div class="stat-item shaoyang"><div class="num">6</div><div class="label">少阳（半表半里阳证）</div></div>
+  <div class="stat-item taiyin"><div class="num">47</div><div class="label">太阴（里阴证）</div></div>
+  <div class="stat-item shaoyin"><div class="num">8</div><div class="label">少阴（表阴证）</div></div>
+  <div class="stat-item jueyin"><div class="num">30</div><div class="label">厥阴（半表半里阴证）</div></div>
+</div>
+<div class="container">
+<div class="section taiyang">
+  <div class="section-header">
+    太阳病
+    <span class="desc">太阳（表阳证）</span>
+    <span class="badge">28方</span>
+  </div>
+  <table>
+    <thead><tr><th>方剂</th><th>所属篇章</th><th>核心条文</th></tr></thead>
+    <tbody>
+      <tr><td class="formula-name">一物瓜蒂汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">太阳中暍，身热疼重，而脉微弱，此以夏月伤冷水，水行皮中所致也，一物瓜蒂汤主之。</td></tr>
+      <tr><td class="formula-name">乌头汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">中风历节病脉证并治第五</td><td class="formula-context">病历节不可屈伸，疼痛，乌头汤主之。</td></tr>
+      <tr><td class="formula-name">五苓散<span class="verified-tag">原文</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">假令瘦人脐下有悸，吐涎沫而癫眩，此水也，五苓散主之。</td></tr>
+      <tr><td class="formula-name">厚朴七物汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">病腹满，发热十日，脉浮而数，饮食如故，厚朴七物汤主之。</td></tr>
+      <tr><td class="formula-name">厚朴麻黄汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">咳而脉浮者，厚朴麻黄汤主之。</td></tr>
+      <tr><td class="formula-name">大青龙汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">病溢饮者，当发其汗，大青龙汤主之。</td></tr>
+      <tr><td class="formula-name">射干麻黄汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">咳而上气，喉中水鸡声，射干麻黄汤主之。</td></tr>
+      <tr><td class="formula-name">小青龙加石膏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">肺胀，咳而上气，烦躁而喘，脉浮者，心下有水，小青龙加石膏汤主之。</td></tr>
+      <tr><td class="formula-name">小青龙汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">咳逆倚息不得卧，小青龙汤主之。</td></tr>
+      <tr><td class="formula-name">抵当乌头桂枝汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">寒疝腹中痛，逆冷，手足不仁，若身疼痛，灸刺诸药不能治，抵当乌头桂枝汤主之。</td></tr>
+      <tr><td class="formula-name">杏子汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">浮者宜杏子汤。</td></tr>
+      <tr><td class="formula-name">栝蒌桂枝汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">太阳病，其证备，身体强，几几然，脉反沉迟，此为痉，栝蒌桂枝汤主之。</td></tr>
+      <tr><td class="formula-name">桂枝加桂汤<span class="verified-tag">原文</span></td><td class="formula-chapter">奔豚气病脉证治第八</td><td class="formula-context">发汗后，烧针令其汗，针处被寒，核起而赤者，必发奔豚，气从少腹上至心，灸其核上各一壮，与桂枝加桂汤主之。</td></tr>
+      <tr><td class="formula-name">桂枝加黄耆汤<span class="verified-tag">原文</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">若身重，汗出已辄轻者，久久必身𥆧，𥆧即胸中痛，又从腰以上必汗出，下无汗，腰髋弛痛，如有物在皮中状，剧者不能食，身疼重，烦躁，小便不利，此为黄汗，桂枝加黄耆汤主之。</td></tr>
+      <tr><td class="formula-name">桂枝汤<span class="verified-tag">原文</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">温里宜四逆汤，攻表宜桂枝汤。</td></tr>
+      <tr><td class="formula-name">桂枝芍药知母汤<span class="verified-tag">原文</span></td><td class="formula-chapter">中风历节病脉证并治第五</td><td class="formula-context">诸肢节疼痛，身体魁羸，脚肿如脱，头眩短气，温温欲吐，桂枝芍药知母汤主之。</td></tr>
+      <tr><td class="formula-name">瓜蒂散<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">宿食在上脘，当吐之，宜瓜蒂散。</td></tr>
+      <tr><td class="formula-name">竹叶汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人产后病脉证治第二十一</td><td class="formula-context">产后中风，发热，面正赤，喘而头痛，竹叶汤主之。</td></tr>
+      <tr><td class="formula-name">耆芍桂酒汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">发热汗出而渴，状如风水，汗沾衣，色正黄如柏汁，脉自沉，何从得之？师曰：以汗出入水中浴，水从汗孔入得之，宜耆芍桂酒汤主之。</td></tr>
+      <tr><td class="formula-name">茯苓桂枝甘草大枣汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">奔豚气病脉证治第八</td><td class="formula-context">发汗后，脐下悸者，欲作奔豚，茯苓桂枝甘草大枣汤主之。</td></tr>
+      <tr><td class="formula-name">葛根汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">太阳病，无汗而小便反少，气上冲胸，口噤不得语，欲作刚痉，葛根汤主之。</td></tr>
+      <tr><td class="formula-name">葵子茯苓散<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">妊娠有水气，身重，小便不利，洒淅恶寒，起即头眩，葵子茯苓散主之。</td></tr>
+      <tr><td class="formula-name">蒲灰散<span class="inferred-tag">推断</span></td><td class="formula-chapter">消渴小便不利淋病脉证并治第十三</td><td class="formula-context">小便不利，蒲灰散主之。</td></tr>
+      <tr><td class="formula-name">蜀漆牡蛎龙骨救逆汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">惊悸吐衄下血胸满瘀血病脉证治第十六</td><td class="formula-context">火邪者，桂枝去芍药加蜀漆牡蛎龙骨救逆汤主之。</td></tr>
+      <tr><td class="formula-name">越婢加术汤<span class="verified-tag">原文</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">越婢加术汤主之。</td></tr>
+      <tr><td class="formula-name">越婢汤<span class="verified-tag">原文</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">风水恶风，一身悉肿，脉浮不渴，续自汗出，无大热，越婢汤主之。</td></tr>
+      <tr><td class="formula-name">防己黄耆汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">风湿，脉浮身重，汗出恶风者，防己黄耆汤主之。</td></tr>
+      <tr><td class="formula-name">黄耆桂枝五物汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">血痹阴阳俱微，寸口关上微，尺中小紧，外证身体不仁，如风痹状，黄耆桂枝五物汤主之。</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section yangming">
+  <div class="section-header">
+    阳明病
+    <span class="desc">阳明（里阳证）</span>
+    <span class="badge">27方</span>
+  </div>
+  <table>
+    <thead><tr><th>方剂</th><th>所属篇章</th><th>核心条文</th></tr></thead>
+    <tbody>
+      <tr><td class="formula-name">厚朴三物汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">痛而闭者，厚朴三物汤主之。</td></tr>
+      <tr><td class="formula-name">厚朴大黄汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">支饮胸满者，厚朴大黄汤主之。</td></tr>
+      <tr><td class="formula-name">大承气汤<span class="verified-tag">原文</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">问曰：人病有宿食，何以别之？师曰：寸口脉浮而大，按之反涩，尺中亦微而涩，故知有宿食，大承气汤主之。</td></tr>
+      <tr><td class="formula-name">大黄牡丹汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">疮痈肠痈浸淫病脉证并治第十八</td><td class="formula-context">脉洪数者，脓已成，不可下也，大黄牡丹汤主之。</td></tr>
+      <tr><td class="formula-name">大黄甘草汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">食已即吐者，大黄甘草汤主之。</td></tr>
+      <tr><td class="formula-name">大黄硝石汤<span class="verified-tag">原文</span></td><td class="formula-chapter">黄疸病脉证并治第十五</td><td class="formula-context">黄疸腹满，小便不利而赤，自汗出，此为表和里实，当下之，宜大黄硝石汤。</td></tr>
+      <tr><td class="formula-name">大黄附子汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">胁下偏痛，发热，其脉紧弦，此寒也，以温药下之，宜大黄附子汤。</td></tr>
+      <tr><td class="formula-name">小承气汤<span class="verified-tag">原文</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">下利谵语者，有燥屎也，小承气汤主之。</td></tr>
+      <tr><td class="formula-name">己椒苈黄丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">腹满，口舌干燥，此肠间有水气，己椒苈黄丸主之。</td></tr>
+      <tr><td class="formula-name">当归贝母苦参丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">妊娠，小便难，饮食如故，当归贝母苦参丸主之。</td></tr>
+      <tr><td class="formula-name">文蛤散<span class="inferred-tag">推断</span></td><td class="formula-chapter">消渴小便不利淋病脉证并治第十三</td><td class="formula-context">渴欲饮水不止者，文蛤散主之。</td></tr>
+      <tr><td class="formula-name">文蛤汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">吐后、渴欲得水而贪饮者，文蛤汤主之。</td></tr>
+      <tr><td class="formula-name">栀子大黄汤<span class="verified-tag">原文</span></td><td class="formula-chapter">黄疸病脉证并治第十五</td><td class="formula-context">酒黄疸，心中懊𢙐或热痛，栀子大黄汤主之。</td></tr>
+      <tr><td class="formula-name">栀子豉汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">下利后更烦，按之心下濡者，为虚烦也，栀子豉汤主之。</td></tr>
+      <tr><td class="formula-name">桔梗汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">咳而胸满，振寒脉数，咽干不渴，时出浊唾腥臭，久久吐脓如米粥者，为肺痈，桔梗汤主之。</td></tr>
+      <tr><td class="formula-name">泻心汤<span class="verified-tag">原文</span></td><td class="formula-chapter">惊悸吐衄下血胸满瘀血病脉证治第十六</td><td class="formula-context">心气不足，吐血、衄血，泻心汤主之。</td></tr>
+      <tr><td class="formula-name">猪苓汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">消渴小便不利淋病脉证并治第十三</td><td class="formula-context">脉浮发热，渴欲饮水，小便不利者，猪苓汤主之。</td></tr>
+      <tr><td class="formula-name">白头翁加甘草阿胶汤<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人产后病脉证治第二十一</td><td class="formula-context">产后下利虚极，白头翁加甘草阿胶汤主之。</td></tr>
+      <tr><td class="formula-name">白头翁汤<span class="verified-tag">原文</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">热利下重者，白头翁汤主之。</td></tr>
+      <tr><td class="formula-name">白虎加人参汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">汗出恶寒，身热而渴，白虎加人参汤主之。</td></tr>
+      <tr><td class="formula-name">皂荚丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">咳逆上气，时时吐浊，但坐不得眠，皂荚丸主之。</td></tr>
+      <tr><td class="formula-name">茵陈蒿汤<span class="verified-tag">原文</span></td><td class="formula-chapter">黄疸病脉证并治第十五</td><td class="formula-context">谷疸之为病，寒热不食，食即头眩，心胸不安，久久发黄为谷疸，茵陈蒿汤主之。</td></tr>
+      <tr><td class="formula-name">葶苈大枣泻肺汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">肺痈，喘不得卧，葶苈大枣泻肺汤主之。</td></tr>
+      <tr><td class="formula-name">越婢加半夏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">咳而上气，此为肺胀，其人喘，目如脱状，脉浮大者，越婢加半夏汤主之。</td></tr>
+      <tr><td class="formula-name">风引汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">中风历节病脉证并治第五</td><td class="formula-context">巢氏云：脚气宜风引汤。</td></tr>
+      <tr><td class="formula-name">麦门冬汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">大逆上气，咽喉不利，止逆下气者，麦门冬汤主之。</td></tr>
+      <tr><td class="formula-name">麻子仁丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">五脏风寒积聚病脉证并治第十一</td><td class="formula-context">趺阳脉浮而涩，浮则胃气强，涩则小便数，浮涩相搏，大便则坚，其脾为约，麻子仁丸主之。</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section shaoyang">
+  <div class="section-header">
+    少阳病
+    <span class="desc">少阳（半表半里阳证）</span>
+    <span class="badge">6方</span>
+  </div>
+  <table>
+    <thead><tr><th>方剂</th><th>所属篇章</th><th>核心条文</th></tr></thead>
+    <tbody>
+      <tr><td class="formula-name">大柴胡汤<span class="verified-tag">原文</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">按之心下满痛者，此为实也，当下之，宜大柴胡汤。</td></tr>
+      <tr><td class="formula-name">奔豚汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">奔豚气病脉证治第八</td><td class="formula-context">奔豚气上冲胸，腹痛，往来寒热，奔豚汤主之。</td></tr>
+      <tr><td class="formula-name">小柴胡汤<span class="verified-tag">原文</span></td><td class="formula-chapter">黄疸病脉证并治第十五</td><td class="formula-context">诸黄，腹痛而呕者，宜柴胡汤。</td></tr>
+      <tr><td class="formula-name">白虎加桂枝汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">疟病脉证并治第四</td><td class="formula-context">温疟者，其脉如平，身无寒但热，骨节疼烦，时呕，白虎加桂枝汤主之。</td></tr>
+      <tr><td class="formula-name">蜀漆散<span class="verified-tag">原文</span></td><td class="formula-chapter">疟病脉证并治第四</td><td class="formula-context">疟多寒者，名曰牝疟，蜀漆散主之。</td></tr>
+      <tr><td class="formula-name">黄芩加半夏生姜汤<span class="verified-tag">原文</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">干呕而利者，黄芩加半夏生姜汤主之。</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section taiyin">
+  <div class="section-header">
+    太阴病
+    <span class="desc">太阴（里阴证）</span>
+    <span class="badge">47方</span>
+  </div>
+  <table>
+    <thead><tr><th>方剂</th><th>所属篇章</th><th>核心条文</th></tr></thead>
+    <tbody>
+      <tr><td class="formula-name">乌头赤石脂丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">心痛彻背，背痛彻心，乌头赤石脂丸主之。</td></tr>
+      <tr><td class="formula-name">十枣汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">病悬饮者，十枣汤主之。</td></tr>
+      <tr><td class="formula-name">半夏厚朴汤<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人咽中如有炙脔，半夏厚朴汤主之。</td></tr>
+      <tr><td class="formula-name">半夏干姜散<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">干呕，吐逆，吐涎沫，半夏干姜散主之。</td></tr>
+      <tr><td class="formula-name">半夏麻黄丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">惊悸吐衄下血胸满瘀血病脉证治第十六</td><td class="formula-context">心下悸者，半夏麻黄丸主之。</td></tr>
+      <tr><td class="formula-name">去石膏加茯苓芒硝汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">虚者即愈，实者三日复发，后与不愈者，宜木防己汤去石膏加茯苓芒硝汤主之。</td></tr>
+      <tr><td class="formula-name">大半夏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">胃反呕吐者，大半夏汤主之。</td></tr>
+      <tr><td class="formula-name">大建中汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">心胸中大寒痛，呕不能饮食，腹中满，上冲皮起，出见有头足，上下痛而不可触近，大建中汤主之。</td></tr>
+      <tr><td class="formula-name">小半夏加茯苓汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">卒呕吐，心下痞，膈间有水，眩悸者，小半夏加茯苓汤主之。</td></tr>
+      <tr><td class="formula-name">小半夏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">呕家本渴，渴者为欲解，今反不渴，心下有支饮故也，小半夏汤主之。</td></tr>
+      <tr><td class="formula-name">小半夏茯苓汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">先渴后呕，为水停心下，此属饮家，小半夏茯苓汤主之。</td></tr>
+      <tr><td class="formula-name">小建中汤<span class="verified-tag">原文</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">虚劳里急，悸、衄，腹中痛，梦失精，四肢酸疼，手足烦热，咽干口燥，小建中汤主之。</td></tr>
+      <tr><td class="formula-name">干姜人参半夏丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">妊娠呕吐不止，干姜人参半夏丸主之。</td></tr>
+      <tr><td class="formula-name">当归生姜羊肉汤<span class="verified-tag">原文</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">寒疝腹中痛，及胁痛里急者，当归生姜羊肉汤主之。</td></tr>
+      <tr><td class="formula-name">当归芍药散<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">妇人怀妊，腹中㽲痛，当归芍药散主之。</td></tr>
+      <tr><td class="formula-name">木防己汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">膈间支饮，其人喘满，心下痞坚，面色黧黑，其脉沉紧，得之数十日，医吐下之不愈，木防己汤主之。</td></tr>
+      <tr><td class="formula-name">枳实薤白桂枝汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">胸痹心中痞，留气结在胸课本：宜作「胸痹心中痞气，气结在胸」，胸满，胁下逆抢心，枳实薤白桂枝汤主之。</td></tr>
+      <tr><td class="formula-name">枳术汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">心下坚，大如盘，边如旋盘，水饮所作，枳术汤主之。</td></tr>
+      <tr><td class="formula-name">柏叶汤<span class="verified-tag">原文</span></td><td class="formula-chapter">惊悸吐衄下血胸满瘀血病脉证治第十六</td><td class="formula-context">吐血不止者，柏叶汤主之。</td></tr>
+      <tr><td class="formula-name">栝蒌薤白半夏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">胸痹不得卧，心痛彻背者，栝蒌薤白半夏汤主之。</td></tr>
+      <tr><td class="formula-name">栝蒌薤白白酒汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">胸痹之病，喘息咳唾，胸背痛，短气，寸口脉沉而迟，关上小紧数，栝蒌薤白白酒汤主之。</td></tr>
+      <tr><td class="formula-name">桂枝生姜枳实汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">心中痞，诸逆，心悬痛，桂枝生姜枳实汤主之。</td></tr>
+      <tr><td class="formula-name">橘皮汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">干呕、哕，若手足厥者，橘皮汤主之。</td></tr>
+      <tr><td class="formula-name">橘皮竹茹汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">哕逆者，橘皮竹茹汤主之。</td></tr>
+      <tr><td class="formula-name">泽泻汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">心下有支饮，其人苦冒眩，泽泻汤主之。</td></tr>
+      <tr><td class="formula-name">泽漆汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">肺痿肺痈咳嗽上气病脉证并治第七</td><td class="formula-context">脉沈者，泽漆汤主之。</td></tr>
+      <tr><td class="formula-name">猪苓散<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">（《脉经》云：病人或从呼吸上蚀其咽，或从下焦蚀其肛阴，蚀上为惑，蚀下为狐，狐惑病者，猪苓散主之。</td></tr>
+      <tr><td class="formula-name">甘姜苓术汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">五脏风寒积聚病脉证并治第十一</td><td class="formula-context">肾著之病，其人身体重，腰中冷，如坐水中，形如水状，反不渴，小便自利，饮食如故，病属下焦，身劳汗出，衣一作表里冷湿，久久得之，腰以下冷痛，腹重如带五千钱，甘姜苓术汤主之。</td></tr>
+      <tr><td class="formula-name">甘草粉蜜汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">趺蹶手指臂肿转筋阴狐疝蛔虫病脉证治第十九</td><td class="formula-context">蚘虫之为病，令人吐涎，心痛，发作有时，毒药不止，甘草粉蜜汤主之。</td></tr>
+      <tr><td class="formula-name">甘遂半夏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">病者脉伏，其人欲自利，利反快，虽利，心下续坚满，此为留饮欲去故也，甘遂半夏汤主之。</td></tr>
+      <tr><td class="formula-name">甘麦大枣汤<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人脏躁，喜悲伤欲哭，象如神灵所作，数欠伸，甘麦大枣汤主之。</td></tr>
+      <tr><td class="formula-name">生姜半夏汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">病人胸中似喘不喘，似呕不呕，似哕不哕，彻心中愦愦然无奈者，生姜半夏汤主之。</td></tr>
+      <tr><td class="formula-name">白术散<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">妊娠养胎，白术散主之。</td></tr>
+      <tr><td class="formula-name">紫参汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">下利肺痛，紫参汤主之。</td></tr>
+      <tr><td class="formula-name">胶姜汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人陷经，漏下黑不解，胶姜汤主之。</td></tr>
+      <tr><td class="formula-name">苓桂术甘汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痰饮咳嗽病脉证并治第十二</td><td class="formula-context">苓桂术甘汤主之。</td></tr>
+      <tr><td class="formula-name">茯苓杏仁甘草汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">胸痹，胸中气塞，短气，茯苓杏仁甘草汤主之。</td></tr>
+      <tr><td class="formula-name">薏苡附子散<span class="inferred-tag">推断</span></td><td class="formula-chapter">胸痹心痛短气病脉证治第九</td><td class="formula-context">胸痹缓急者，薏苡附子散主之。</td></tr>
+      <tr><td class="formula-name">薏苡附子败酱散<span class="inferred-tag">推断</span></td><td class="formula-chapter">疮痈肠痈浸淫病脉证并治第十八</td><td class="formula-context">肠痈之为病，其身甲错，腹皮急，按之濡，如肿状，腹无积聚，身无热，脉数，此为肠内有痈脓，薏苡附子败酱散主之。</td></tr>
+      <tr><td class="formula-name">薯蓣丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">虚劳诸不足，风气百疾，薯蓣丸主之。</td></tr>
+      <tr><td class="formula-name">藜芦甘草汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">趺蹶手指臂肿转筋阴狐疝蛔虫病脉证治第十九</td><td class="formula-context">病人常以手指臂肿动，此人身体𥆧𥆧者，藜芦甘草汤主之。</td></tr>
+      <tr><td class="formula-name">诃黎勒散<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">气利，诃黎勒散主之。</td></tr>
+      <tr><td class="formula-name">赤丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">寒气厥逆，赤丸主之。</td></tr>
+      <tr><td class="formula-name">防己茯苓汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">皮水为病，四肢肿，水气在皮肤中，四肢聂聂动者，防己茯苓汤主之。</td></tr>
+      <tr><td class="formula-name">附子粳米汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">腹满寒疝宿食病脉证治第十</td><td class="formula-context">腹中寒气，雷鸣切痛，胸胁逆满，呕吐，附子粳米汤主之。</td></tr>
+      <tr><td class="formula-name">黄土汤<span class="verified-tag">原文</span></td><td class="formula-chapter">惊悸吐衄下血胸满瘀血病脉证治第十六</td><td class="formula-context">下血，先便后血，此远血也，黄土汤主之。</td></tr>
+      <tr><td class="formula-name">黄耆建中汤<span class="verified-tag">原文</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">虚劳里急、诸不足，黄耆建中汤主之。</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section shaoyin">
+  <div class="section-header">
+    少阴病
+    <span class="desc">少阴（表阴证）</span>
+    <span class="badge">8方</span>
+  </div>
+  <table>
+    <thead><tr><th>方剂</th><th>所属篇章</th><th>核心条文</th></tr></thead>
+    <tbody>
+      <tr><td class="formula-name">去桂加白术汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">伤寒八九日，风湿相搏，身体疼烦，不能自转侧，不呕不渴，脉浮虚而涩者，桂枝附子汤主之。:;若大便坚，小便自利者，去桂加白术汤主之。</td></tr>
+      <tr><td class="formula-name">四逆汤<span class="verified-tag">原文</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">呕而脉弱，小便复利，身有微热，见厥者，难治，四逆汤主之。</td></tr>
+      <tr><td class="formula-name">栝蒌瞿麦丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">消渴小便不利淋病脉证并治第十三</td><td class="formula-context">小便不利者，有水气，其人若渴，栝蒌瞿麦丸主之。</td></tr>
+      <tr><td class="formula-name">桂枝附子汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">伤寒八九日，风湿相搏，身体疼烦，不能自转侧，不呕不渴，脉浮虚而涩者，桂枝附子汤主之。</td></tr>
+      <tr><td class="formula-name">桃花汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">下利便脓血者、桃花汤主之。</td></tr>
+      <tr><td class="formula-name">甘草附子汤<span class="verified-tag">原文</span></td><td class="formula-chapter">痉湿暍病脉证并治第二</td><td class="formula-context">风湿相搏，骨节疼烦掣痛，不得屈伸，近之则痛剧，汗出短气，小便不利，恶风不欲去衣，或身微肿者，甘草附子汤主之。</td></tr>
+      <tr><td class="formula-name">肾气丸<span class="verified-tag">原文</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">虚劳腰痛，少腹拘急，小便不利者，八味肾气丸主之。</td></tr>
+      <tr><td class="formula-name">麻黄附子汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">水气病脉证并治第十四</td><td class="formula-context">脉沉者宜麻黄附子汤；</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section jueyin">
+  <div class="section-header">
+    厥阴病
+    <span class="desc">厥阴（半表半里阴证）</span>
+    <span class="badge">30方</span>
+  </div>
+  <table>
+    <thead><tr><th>方剂</th><th>所属篇章</th><th>核心条文</th></tr></thead>
+    <tbody>
+      <tr><td class="formula-name">下瘀血汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人产后病脉证治第二十一</td><td class="formula-context">产妇腹痛、法当以枳实芍药散，假令不愈者，此为腹中有瘀血著脐下，宜下瘀血汤主之。</td></tr>
+      <tr><td class="formula-name">乌梅丸<span class="verified-tag">原文</span></td><td class="formula-chapter">趺蹶手指臂肿转筋阴狐疝蛔虫病脉证治第十九</td><td class="formula-context">蚘厥者，乌梅丸主之。</td></tr>
+      <tr><td class="formula-name">升麻鳖甲汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">阳毒之为病，面赤斑斑如锦纹，咽喉痛，唾脓血，五日可治，七日不可治，升麻鳖甲汤主之。</td></tr>
+      <tr><td class="formula-name">土瓜根散<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">带下经水不利，少腹满痛，经一月再见者，土瓜根散主之。</td></tr>
+      <tr><td class="formula-name">大黄甘遂汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人少腹满如敦状，小便微难而不渴，生后者，此为水与血俱结血室也，大黄甘遂汤主之。</td></tr>
+      <tr><td class="formula-name">当归散<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">妇人妊娠，宜常服当归散主之。</td></tr>
+      <tr><td class="formula-name">抵当汤<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人经水不利下，抵当汤主之。</td></tr>
+      <tr><td class="formula-name">旋覆花汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">五脏风寒积聚病脉证并治第十一</td><td class="formula-context">肝著，其人常欲蹈其胸上，先未苦时，但欲饮热，旋覆花汤主之。</td></tr>
+      <tr><td class="formula-name">枳实芍药散<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人产后病脉证治第二十一</td><td class="formula-context">产后腹痛，烦满不得卧，枳实芍药散主之。</td></tr>
+      <tr><td class="formula-name">桂枝加龙骨牡蛎汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">脉得诸芤动微紧，男子失精，女子梦交，桂枝加龙骨牡蛎汤主之。</td></tr>
+      <tr><td class="formula-name">桂枝茯苓丸<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">所以血不止者，其症不去故也，当下其症，桂枝茯苓丸主之。</td></tr>
+      <tr><td class="formula-name">温经汤<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">当以温经汤主之。</td></tr>
+      <tr><td class="formula-name">滑石代赭汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">百合病下之后者，滑石代赭汤主之。</td></tr>
+      <tr><td class="formula-name">王不留行散<span class="inferred-tag">推断</span></td><td class="formula-chapter">疮痈肠痈浸淫病脉证并治第十八</td><td class="formula-context">病金疮，王不留行散主之。</td></tr>
+      <tr><td class="formula-name">甘草泻心汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">蚀于上部则声喝（一作嗄），甘草泻心汤主之。</td></tr>
+      <tr><td class="formula-name">百合地黄汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">百合病，不经吐、下、发汗，病形如初者，百合地黄汤主之。</td></tr>
+      <tr><td class="formula-name">百合洗方<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">百合病一月不解，变成渴者，百合洗方主之。</td></tr>
+      <tr><td class="formula-name">百合滑石散<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">百合病变发热者（一作发寒热），百合滑石散主之。</td></tr>
+      <tr><td class="formula-name">百合知母汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">百合病发汗后者，百合知母汤主之。</td></tr>
+      <tr><td class="formula-name">矾石丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人经水闭不利，脏坚癖不止，中有干血，下白物，矾石丸主之。</td></tr>
+      <tr><td class="formula-name">硝石矾石散<span class="inferred-tag">推断</span></td><td class="formula-chapter">黄疸病脉证并治第十五</td><td class="formula-context">硝石矾石散主之。</td></tr>
+      <tr><td class="formula-name">竹皮大丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人产后病脉证治第二十一</td><td class="formula-context">妇人乳中虚，烦乱呕逆，安中益气，竹皮大丸主之。</td></tr>
+      <tr><td class="formula-name">红蓝花酒<span class="inferred-tag">推断</span></td><td class="formula-chapter">妇人杂病脉证并治第二十二</td><td class="formula-context">妇人六十二种风，及腹中血气刺痛，红蓝花酒主之。</td></tr>
+      <tr><td class="formula-name">胶艾汤<span class="verified-tag">原文</span></td><td class="formula-chapter">妇人妊娠病脉证并治第二十</td><td class="formula-context">师曰：妇人有漏下者，有半产后因续下血都不绝者，有妊娠下血者，假令妊娠腹中痛，为胞阻，胶艾汤主之。</td></tr>
+      <tr><td class="formula-name">茱萸汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">呕吐哕下利病脉证治第十七</td><td class="formula-context">呕而胸满者，茱萸汤主之。</td></tr>
+      <tr><td class="formula-name">蜘蛛散<span class="inferred-tag">推断</span></td><td class="formula-chapter">趺蹶手指臂肿转筋阴狐疝蛔虫病脉证治第十九</td><td class="formula-context">阴狐疝气者，偏有小大，时时上下，蜘蛛散主之。</td></tr>
+      <tr><td class="formula-name">赤豆当归散<span class="inferred-tag">推断</span></td><td class="formula-chapter">百合狐惑阴阳毒病脉证并治第三</td><td class="formula-context">若能食者，脓已成也，赤豆当归散主之。</td></tr>
+      <tr><td class="formula-name">酸枣仁汤<span class="inferred-tag">推断</span></td><td class="formula-chapter">血痹虚劳病脉证并治第六</td><td class="formula-context">虚劳虚烦不得眠，酸枣仁汤主之。</td></tr>
+      <tr><td class="formula-name">鳖甲煎丸<span class="inferred-tag">推断</span></td><td class="formula-chapter">疟病脉证并治第四</td><td class="formula-context">如其不差，当云何？师曰：此结为症瘕，名曰疟母，急治之，宜鳖甲煎丸。</td></tr>
+      <tr><td class="formula-name">鸡屎白散<span class="inferred-tag">推断</span></td><td class="formula-chapter">趺蹶手指臂肿转筋阴狐疝蛔虫病脉证治第十九</td><td class="formula-context">转筋入腹者，鸡屎白散主之。</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<div class="footer">
+  <p>基于胡希恕六经-八纲辨证体系分类 | 金匮要略 · 汉·张仲景</p>
+  <p style="margin-top:5px;font-size:12px;">
+    分类原则：太阳病=表阳证（脉浮恶寒发热）| 阳明病=里阳证（不恶寒反恶热、便秘、潮热）<br>
+    少阳病=半表半里阳证（往来寒热、胸胁苦满）| 太阴病=里阴证（腹满、下利、呕吐）<br>
+    少阴病=表阴证（脉微细、但欲寐、四肢厥冷）| 厥阴病=半表半里阴证（寒热错杂、上热下寒）
+  </p>
+  <p style="margin-top:10px;font-size:11px;color:#999;">
+    <span style="display:inline-block;background:#2ecc71;color:#fff;padding:1px 5px;border-radius:3px;margin-right:4px;">原文</span> 经胡希恕《医论医案集粹》原文明确验证
+    <span style="display:inline-block;background:#bdc3c7;color:#fff;padding:1px 5px;border-radius:3px;margin-left:10px;margin-right:4px;">推断</span> 基于胡希恕方法论推断，待进一步校验
+  </p>
+</div>
+</body>
+</html>
