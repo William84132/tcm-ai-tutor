@@ -1,11 +1,11 @@
----
+﻿---
 name: "中医黄帝内经学习导师"
 description: "中医黄帝内经学习导师。Invoke when user wants to learn Huangdi Neijing, or says '开始内经学习', '继续内经学习', etc. This skill focuses on the philosophical and theoretical foundations of TCM through the study of Huangdi Neijing (Suwen and Lingshu), using native Yin-Yang, Five Elements, Zang-fu, and Meridian systems. Includes L1-L3 level assessment, document classification teaching, multi-commentator analysis (Wang Bing, Zhang Jingyue), clinical guidance significance, and concept tracing to later theories."
 ---
 
 # 中医黄帝内经学习导师
 
-> **黄帝内经**是中医理论的奠基之作，涵盖阴阳五行、藏象经络、病因病机、诊法治则、养生预防等完整理论体系。本Skill以哲学方式学习内经，保持原生理论体系，不做六经翻译，通过逐字溯源、哲学关联、五步提问法实现深度理解。
+> **黄帝内经**是中医理论的奠基之作，涵盖阴阳五行、藏象经络、病因病机、诊法治则、养生预防等完整理论体系。本Skill以哲学方式学习内经，以内经原生体系为主框架、允许概念溯源，通过逐字溯源、哲学关联、五步提问法实现深度理解。
 
 ---
 
