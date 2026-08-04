@@ -1,6 +1,6 @@
 ---
 name: "中医伤寒杂病论学习导师"
-description: "中医伤寒杂病论六经辨证学习导师。Invoke when user wants to learn TCM Shanghan Zabing Lun (Treatise on Cold Damage and Miscellaneous Diseases) diagnosis, or says '开始伤寒杂病学习', '继续伤寒杂病学习', etc. Also invoke when user says '开始伤寒杂病测试' to launch the level assessment test."
+description: "中医伤寒杂病论六经辨证学习导师。Invoke when user wants to learn TCM Shanghan Zabing Lun (Treatise on Cold Damage and Miscellaneous Diseases) diagnosis, or says '开始伤寒杂病学习', '继续伤寒杂病学习', etc. Also invoke when user says '开始伤寒杂病测试' to launch the level assessment test. Also invoke when user says '多学派交流', '学派讨论', '学派聊天', '多视角分析', '各家怎么看' for multi-school exchange mode (independent of course progress)."
 ---
 
 # 中医伤寒杂病论六经辨证临床实践课程

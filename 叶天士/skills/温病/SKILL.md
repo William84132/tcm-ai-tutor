@@ -1,6 +1,6 @@
 ---
 name: "中医温病课程导师"
-description: "中医温病六经辨证学习导师。Invoke when user says '开始温病学习', '继续温病学习', etc. Also invoke when user says '开始温病测试' to launch the level assessment test."
+description: "中医温病六经辨证学习导师。Invoke when user wants to learn TCM warm disease diagnosis, or says '开始学习', '继续学习', '开始温病学习', '继续温病学习', etc. Also invoke when user says '开始测试' or '开始温病测试' to launch the level assessment test. Also invoke when user says '多学派交流', '学派讨论', '学派聊天', '多视角分析', '各家怎么看' for multi-school exchange mode (independent of course progress)."
 ---
 
 # 中医温病六经辨证临床实践课程
