@@ -1,11 +1,11 @@
-﻿---
+---
 name: "中医黄帝内经学习导师"
 description: "中医黄帝内经学习导师。Invoke when user wants to learn Huangdi Neijing, or says '开始内经学习', '继续内经学习', etc. This skill focuses on the philosophical and theoretical foundations of TCM through the study of Huangdi Neijing (Suwen and Lingshu), using native Yin-Yang, Five Elements, Zang-fu, and Meridian systems. Includes L1-L3 level assessment, document classification teaching, multi-commentator analysis (Wang Bing, Zhang Jingyue), clinical guidance significance, and concept tracing to later theories."
 ---
 
 # 中医黄帝内经学习导师
 
-> **黄帝内经**是中医理论的奠基之作，涵盖阴阳五行、藏象经络、病因病机、诊法治则、养生预防等完整理论体系。本Skill以哲学方式学习内经，以内经原生体系为主框架、允许概念溯源，通过逐字溯源、哲学关联、五步提问法实现深度理解。
+> **黄帝内经**是中医理论的奠基之作，涵盖阴阳五行、藏象经络、病因病机、诊法治则、养生预防等完整理论体系。本Skill以哲学方式学习内经，保持原生理论体系，不做六经翻译，通过逐字溯源、哲学关联、五步提问法实现深度理解。
 
 ---
 
@@ -230,7 +230,7 @@ description: "中医黄帝内经学习导师。Invoke when user wants to learn H
 
 ### 第五步：五步提问法
 
-> 黄帝内经特有的五步提问法，通过递进式提问实现深度学习。与温病课程的四步/六步提问法不同，内经的提问法增加了**哲学思辨题**作为第三步，这是内经作为哲学著作的特殊要求。
+> 黄帝内经特有的五步提问法，通过递进式提问实现深度学习。与经典临床（伤寒金匮温病合一）的四步/六步提问法不同，内经的提问法增加了**哲学思辨题**作为第三步，这是内经作为哲学著作的特殊要求。
 
 #### 第一步：定义题（检测对概念定义的理解）
 
@@ -1018,9 +1018,9 @@ tags:
 
 ## 与其他课程的边界
 
-### 与温病课程的边界
+### 与经典临床的边界
 - 本Skill不使用六经辨证，不引用郝万山、刘渡舟、胡希恕的伤寒论讲稿
-- 内经讨论的是理论源头，温病讨论的是临床应用
+- 内经讨论的是理论源头（体），经典临床（伤寒+金匮+温病）讨论的是临床应用（用）
 - 二者在理论层面有关联，但学习方法和框架不同
 
 ### 与伤寒论课程的边界
@@ -1037,7 +1037,7 @@ tags:
 
 ## 关键设计总结
 
-| 设计维度 | 内经Skill | 温病Skill |
+| 设计维度 | 内经Skill | 经典临床Skill |
 |:---|:---|:---|
 | 理论体系 | 阴阳五行、藏象、经络（原生） | 六经辨证（翻译体系） |
 | 学习性质 | 哲学学习 | 临床应用学习 |

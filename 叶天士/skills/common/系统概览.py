@@ -12,11 +12,11 @@ SKILLS_DIR = os.path.join(BASE_DIR, "skills")
 TEXT_DIR = os.path.join(BASE_DIR, "00-原著全文")
 
 COURSES = [
-    {"name": "温病", "key": "wenbing", "skill_dir": "温病",
-     "progress_file": os.path.join(BASE_DIR, "学习进度追踪.md"),
-     "trigger_learn": "开始温病学习 / 继续温病学习",
-     "trigger_test": "开始温病测试",
-     "color": "蓝色", "question_steps": "四步提问法"},
+    {"name": "经典临床", "key": "jingdianlinchuang", "skill_dir": "经典临床",
+     "progress_file": os.path.join(BASE_DIR, "skills", "经典临床", "进度追踪.md"),
+     "trigger_learn": "开始经典临床学习 / 继续经典临床学习",
+     "trigger_test": "开始测试",
+     "color": "紫色", "question_steps": "四步提问法"},
     {"name": "伤寒论", "key": "shanghan", "skill_dir": "伤寒论",
      "progress_file": os.path.join(SKILLS_DIR, "伤寒论", "进度追踪.md"),
      "trigger_learn": "开始伤寒学习 / 继续伤寒学习",
