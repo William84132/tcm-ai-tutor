@@ -7,7 +7,7 @@ import os
 import re
 from datetime import datetime
 
-BASE_DIR = r"e:\叶天士\叶天士"
+BASE_DIR = r"{仓库根}\叶天士"
 SKILLS_DIR = os.path.join(BASE_DIR, "skills")
 TEXT_DIR = os.path.join(BASE_DIR, "00-原著全文")
 

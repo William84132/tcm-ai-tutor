@@ -14,22 +14,22 @@
 
 ### 方法一：单文件处理
 ```
-python "e:\叶天士\叶天士\10-学习工具\全自动PDF处理工具.py" <PDF文件路径>
+python "{仓库根}\叶天士\10-学习工具\全自动PDF处理工具.py" <PDF文件路径>
 ```
 
 示例：
 ```bash
-python "e:\叶天士\叶天士\10-学习工具\全自动PDF处理工具.py" "e:\叶天士\叶天士\00-原著全文\伤寒论.pdf"
+python "{仓库根}\叶天士\10-学习工具\全自动PDF处理工具.py" "{仓库根}\叶天士\00-原著全文\伤寒论.pdf"
 ```
 
 ### 方法二：批量处理目录
 ```bash
-python "e:\叶天士\叶天士\10-学习工具\全自动PDF处理工具.py" --batch "PDF文件夹路径"
+python "{仓库根}\叶天士\10-学习工具\全自动PDF处理工具.py" --batch "PDF文件夹路径"
 ```
 
 示例：
 ```bash
-python "e:\叶天士\叶天士\10-学习工具\全自动PDF处理工具.py" --batch "e:\叶天士\叶天士\00-原著全文"
+python "{仓库根}\叶天士\10-学习工具\全自动PDF处理工具.py" --batch "{仓库根}\叶天士\00-原著全文"
 ```
 
 ## 工作流程
@@ -85,7 +85,7 @@ python "e:\叶天士\叶天士\10-学习工具\全自动PDF处理工具.py" --ba
 ## 配置文件路径
 ```python
 TESSERACT_PATH = r"E:\360Downloads\tesseract.exe"
-TESSDATA_PATH = r"E:\360Downloads\tessdata"
+TESSDATA_PATH = r"{TESSDATA路径}"
 POPPLER_PATH = r"E:\360Downloads\poppler\poppler-26.02.0\Library\bin"
 ```
 

@@ -272,7 +272,7 @@ TRAE 自动识别此目录下的 `SKILL.md` 文件并按关键词激活 Skill。
 
 ### 2. 配置本地路径
 
-各 Skill 文件中的路径为示例路径（如 `e:\叶天士\叶天士\`）。使用前请替换为你本地的实际路径。详见各 Skill 目录下的 `SKILL.md` 和 `common/shared_config.md` 中的路径配置说明。
+各 Skill 文件中的路径为示例路径（如 `{仓库根}\叶天士\`）。使用前请替换为你本地的实际路径。详见各 Skill 目录下的 `SKILL.md` 和 `common/shared_config.md` 中的路径配置说明。
 
 ### 3. 激活技能
 

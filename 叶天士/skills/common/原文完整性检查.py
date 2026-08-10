@@ -8,8 +8,8 @@ import re
 from datetime import datetime
 
 # 基础路径
-BASE_DIR = r"e:\叶天士\叶天士\00-原著全文"
-SKILLS_DIR = r"e:\叶天士\叶天士\skills"
+BASE_DIR = r"{仓库根}\叶天士\00-原著全文"
+SKILLS_DIR = r"{仓库根}\叶天士\skills"
 
 
 def check_file_exists(path):
