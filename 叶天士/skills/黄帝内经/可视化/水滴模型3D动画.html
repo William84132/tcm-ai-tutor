@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三体水滴模型 · 太极环 · 3D 动画</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+  #scene { width: 100%; height: 100%; display: block; }
+  body {
+    background: radial-gradient(ellipse at 30% 20%, #1a2340 0%, #0d1020 55%, #05060d 100%);
+    color: #dfe6ff;
+  }
+  /* 标题与说明 */
+  #hud {
+    position: fixed; top: 18px; left: 22px; z-index: 10;
+    pointer-events: none; user-select: none;
+  }
+  #hud h1 {
+    font-size: 21px; font-weight: 600; letter-spacing: 2px;
+    color: #eef2ff; text-shadow: 0 2px 12px rgba(120,160,255,.35);
+    margin-bottom: 8px;
+  }
+  #hud .sub {
+    font-size: 12.5px; line-height: 1.9; color: #9fb0d8;
+  }
+  #hud .sub b { color: #c9d6ff; font-weight: 600; }
+  #hud .hint {
+    margin-top: 10px; font-size: 11.5px; color: #6f7fa8;
+  }
+  /* 控制面板 */
+  #panel {
+    position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
+    z-index: 10; width: 172px;
+    background: rgba(14,18,38,.72); border: 1px solid rgba(120,150,255,.22);
+    border-radius: 12px; padding: 14px 14px 12px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.45);
+  }
+  #panel h3 {
+    font-size: 12px; font-weight: 600; color: #aab8e0;
+    letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .row { margin-bottom: 10px; }
+  .row label { display: block; font-size: 11px; color: #8a99c2; margin-bottom: 4px; }
+  .btn {
+    width: 100%; padding: 7px 0; border: 1px solid rgba(130,160,255,.35);
+    background: rgba(60,80,150,.25); color: #dbe4ff; border-radius: 7px;
+    font-size: 12px; cursor: pointer; transition: all .18s;
+  }
+  .btn:hover { background: rgba(90,120,220,.4); }
+  .btn.on { background: rgba(70,200,160,.22); border-color: rgba(70,220,170,.5); color: #b9f2dd; }
+  input[type=range] {
+    width: 100%; height: 3px; -webkit-appearance: none; appearance: none;
+    background: rgba(130,160,255,.3); border-radius: 2px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 13px; height: 13px;
+    border-radius: 50%; background: #7ea2ff; cursor: pointer;
+    box-shadow: 0 0 8px rgba(126,162,255,.8);
+  }
+  #speedVal { float: right; color: #c9d6ff; }
+  /* 图例 */
+  #legend {
+    position: fixed; left: 22px; bottom: 22px; z-index: 10;
+    font-size: 11.5px; color: #8a99c2; line-height: 2.1;
+    background: rgba(14,18,38,.6); border-radius: 10px;
+    padding: 10px 16px; border: 1px solid rgba(120,150,255,.16);
+    pointer-events: none; user-select: none;
+  }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: -1px; }
+  @media (max-width: 760px) {
+    #panel { top: auto; bottom: 14px; right: 14px; transform: none; width: 150px; }
+    #legend { display: none; }
+    #hud h1 { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+
+<div id="hud">
+  <h1>三体水滴模型 · 太极环</h1>
+  <div class="sub">
+    <b>太极核心</b>——黑白相激，互相追逐，如水流交融<br>
+    <b>水滴之身</b>——在环中公转，环又在自转<br>
+    静为分工（阳化气 · 阴成形），动为转化（重阴必阳 · 重阳必阴）
+  </div>
+  <div class="hint">↔ 拖拽旋转视角 ｜ 滚轮缩放 ｜ 自动环绕已开启</div>
+</div>
+
+<div id="panel">
+  <h3>控制面板</h3>
+  <div class="row">
+    <button id="pauseBtn" class="btn">⏸ 暂停旋转</button>
+  </div>
+  <div class="row">
+    <label>旋转速度 <span id="speedVal">1.0×</span></label>
+    <input type="range" id="speed" min="0" max="3" step="0.1" value="1">
+  </div>
+  <div class="row">
+    <button id="viewBtn" class="btn">🔄 回到俯视视角</button>
+  </div>
+</div>
+
+<div id="legend">
+  <span><span class="dot" style="background:#f2f4fa;box-shadow:0 0 6px rgba(255,255,255,.6)"></span>阳（白）——化气 · 上升 · 运动</span><br>
+  <span><span class="dot" style="background:#151a2b;box-shadow:0 0 6px rgba(20,25,50,.8), inset 0 0 0 1.5px rgba(200,210,255,.25)"></span>阴（黑）——成形 · 下降 · 静藏</span><br>
+  <span><span class="dot" style="background:linear-gradient(90deg,#7ea2ff,#4a6ad8);box-shadow:0 0 8px rgba(126,162,255,.6)"></span>环——轨道 · 生生不息</span><br>
+  <span style="color:#b78ae0">☰☱☲☳☴☵☶☷ 八卦标记——环自转的参照</span>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  // ---------- 基础场景 ----------
+  const container = document.getElementById('scene');
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+  camera.position.set(5.6, 3.8, 7.2);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  container.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.8;
+  controls.minDistance = 2.5;
+  controls.maxDistance = 20;
+
+  // ---------- 灯光 ----------
+  scene.add(new THREE.AmbientLight(0x8899cc, 0.55));
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
+  keyLight.position.set(6, 10, 5);
+  scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0x6f8dff, 0.6);
+  rimLight.position.set(-5, -2, -6);
+  scene.add(rimLight);
+
+  const glowLight = new THREE.PointLight(0x7ea2ff, 0.5, 18);
+  glowLight.position.set(0, 2.5, 0);
+  scene.add(glowLight);
+
+  // ---------- 星空 ----------
+  (function makeStars(){
+    const N = 900;
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      const r = 30 + Math.random() * 60;
+      const t = Math.random() * Math.PI * 2;
+      const p = Math.acos(2 * Math.random() - 1);
+      pos[i*3]   = r * Math.sin(p) * Math.cos(t);
+      pos[i*3+1] = r * Math.cos(p);
+      pos[i*3+2] = r * Math.sin(p) * Math.sin(t);
+      const b = 0.5 + Math.random() * 0.5;
+      col[i*3] = b * 0.9; col[i*3+1] = b * 0.95; col[i*3+2] = 1.0;
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const mat = new THREE.PointsMaterial({
+      size: 0.14, vertexColors: true, transparent: true, opacity: 0.85, sizeAttenuation: true
+    });
+    scene.add(new THREE.Points(geo, mat));
+  })();
+
+  // ---------- 太极球核心（黑白流动版）----------
+  // 用 ShaderMaterial 实现：S 形分界线相位随时间旋转，黑白区域像水流一样相互追逐交融
+  // 分界函数：f = θ - π/2 - m·sin(φ - phase) - m2·sin(2φ - 2·phase + 1.3)
+  // f>0 为白（阳），f<0 为黑（阴），soft 控制过渡带宽度（柔和流动感）
+  const taijiUniforms = {
+    uWhite:  { value: new THREE.Color(0xf4f6fc) },
+    uBlack:  { value: new THREE.Color(0x13182a) },
+    uPhase:  { value: 0.0 },
+    uM:      { value: 0.42 },
+    uM2:     { value: 0.14 },
+    uSoft:   { value: 0.05 },
+    uLightDir: { value: new THREE.Vector3(0.5, 0.8, 0.4).normalize() },
+    uLightInt: { value: 0.9 },
+    uAmbient:  { value: 0.38 },
+    uRimColor: { value: new THREE.Color(0x8fa8ff) },
+    uRimInt:   { value: 0.5 }
+  };
+
+  const taijiShaderVert = `
+    varying vec3 vWorldPos;
+    varying vec3 vNormal;
+    varying vec3 vObjPos;
+    void main() {
+      vec4 wp = modelMatrix * vec4(position, 1.0);
+      vWorldPos = wp.xyz;
+      vNormal = normalize(normalMatrix * normal);
+      vObjPos = position;
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }
+  `;
+
+  const taijiShaderFrag = `
+    uniform vec3 uWhite;
+    uniform vec3 uBlack;
+    uniform float uPhase;
+    uniform float uM;
+    uniform float uM2;
+    uniform float uSoft;
+    uniform vec3 uLightDir;
+    uniform float uLightInt;
+    uniform float uAmbient;
+    uniform vec3 uRimColor;
+    uniform float uRimInt;
+    varying vec3 vWorldPos;
+    varying vec3 vNormal;
+    varying vec3 vObjPos;
+    void main() {
+      vec3 n = normalize(vNormal);
+      vec3 p = normalize(vObjPos);
+      float phi = atan(p.x, p.z);
+      float theta = acos(clamp(p.y, -1.0, 1.0));
+      float f = theta - 3.14159265 / 2.0
+              - uM  * sin(phi - uPhase)
+              - uM2 * sin(2.0 * phi - 2.0 * uPhase + 1.3);
+      float t = smoothstep(-uSoft, uSoft, f); // 0=黑 1=白
+      vec3 base = mix(uBlack, uWhite, t);
+      // 简单光照：漫反射 + 环境光 + 边缘光
+      vec3 L = normalize(uLightDir);
+      float diff = max(dot(n, L), 0.0);
+      vec3 V = normalize(cameraPosition - vWorldPos);
+      float rim = pow(1.0 - max(dot(n, V), 0.0), 2.5);
+      vec3 col = base * (uAmbient + uLightInt * diff) + uRimColor * uRimInt * rim;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  const taiji = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 96, 96),
+    new THREE.ShaderMaterial({
+      vertexShader: taijiShaderVert,
+      fragmentShader: taijiShaderFrag,
+      uniforms: taijiUniforms
+    })
+  );
+  taiji.castShadow = true;
+
+  // 鱼眼：跟随分界线相位流动——白鱼眼位于黑色区最宽处，黑鱼眼位于白色区最宽处
+  function makeEye(color, glow) {
+    const geo = new THREE.SphereGeometry(0.13, 32, 32);
+    const mat = new THREE.MeshStandardMaterial({
+      color: color, roughness: 0.35, metalness: 0.15,
+      emissive: glow, emissiveIntensity: 0.55
+    });
+    return new THREE.Mesh(geo, mat);
+  }
+  const eyeWhite = makeEye(0xf4f6fc, 0x9ab4ff);  // 黑区中的白鱼眼
+  const eyeBlack = makeEye(0x13182a, 0x05070f);  // 白区中的黑鱼眼
+
+  // 太极组（含球体与鱼眼）
+  const taijiGroup = new THREE.Group();
+  taijiGroup.add(taiji, eyeWhite, eyeBlack);
+
+  // ---------- 环轨道 ----------
+  const ringR = 3.2;
+  const ringGeo = new THREE.TorusGeometry(ringR, 0.05, 16, 180);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: 0x4a6ad8, emissive: 0x2a3a88, emissiveIntensity: 0.55,
+    roughness: 0.25, metalness: 0.6
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI / 2;
+  ring.castShadow = true;
+
+  // 环上轨道粒子（一圈小光点，标记轨道）
+  const dotN = 90;
+  const dotGeo = new THREE.BufferGeometry();
+  const dotPos = new Float32Array(dotN * 3);
+  for (let i = 0; i < dotN; i++) {
+    const a = i / dotN * Math.PI * 2;
+    dotPos[i*3]   = ringR * Math.cos(a);
+    dotPos[i*3+1] = 0;
+    dotPos[i*3+2] = ringR * Math.sin(a);
+  }
+  dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPos, 3));
+  const dots = new THREE.Points(dotGeo, new THREE.PointsMaterial({
+    color: 0x9db4ff, size: 0.07, transparent: true, opacity: 0.7
+  }));
+
+  // 外层淡蓝光晕（水滴的"轨道空间"球壳，极淡）
+  const shell = new THREE.Mesh(
+    new THREE.SphereGeometry(3.55, 48, 48),
+    new THREE.MeshBasicMaterial({
+      color: 0x4a6ad8, transparent: true, opacity: 0.035, wireframe: true
+    })
+  );
+
+  // 旋转环组
+  const ringGroup = new THREE.Group();
+  ringGroup.add(ring, dots, shell);
+
+  // ---------- 八卦标记（环自转的参照）----------
+  // 用 Canvas 绘制"卦符+卦名"圆形徽章，做成始终面向相机的 Sprite
+  function makeBaguaLabel(symbol, name, color) {
+    const size = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    // 圆形深色底 + 卦色描边
+    ctx.beginPath();
+    ctx.arc(128, 128, 116, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(10,14,30,0.88)';
+    ctx.fill();
+    ctx.lineWidth = 7;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+    // 卦名（中文，确保可读）
+    ctx.fillStyle = '#eef2ff';
+    ctx.font = 'bold 76px "Noto Sans CJK SC","Microsoft YaHei",sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(name, 128, 104);
+    // 卦符（Unicode：☰☱☲☳☴☵☶☷）
+    ctx.fillStyle = color;
+    ctx.font = '58px "Segoe UI Symbol","Noto Sans Symbols 2",sans-serif';
+    ctx.fillText(symbol, 128, 190);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const mat = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
+    const sprite = new THREE.Sprite(mat);
+    sprite.scale.set(0.78, 0.78, 1);
+    return sprite;
+  }
+
+  // 先天八卦方位（说卦传"天地定位"）：乾南 坤北 离东 坎西 兑东南 震东北 巽西南 艮西北
+  // 环平面为 XZ：+X=东，-Z=南，-X=西，+Z=北
+  const bagua = [
+    { symbol: '☰', name: '乾', color: '#e8e8f0', a: -Math.PI/2 },      // 南
+    { symbol: '☷', name: '坤', color: '#b78ae0', a:  Math.PI/2 },      // 北
+    { symbol: '☲', name: '离', color: '#ff6b6b', a:  0 },              // 东
+    { symbol: '☵', name: '坎', color: '#7ea2ff', a:  Math.PI },        // 西
+    { symbol: '☱', name: '兑', color: '#cfd8e8', a: -Math.PI/4 },      // 东南
+    { symbol: '☳', name: '震', color: '#4ade80', a:  Math.PI/4 },      // 东北
+    { symbol: '☴', name: '巽', color: '#67e8f9', a: -3*Math.PI/4 },    // 西南
+    { symbol: '☶', name: '艮', color: '#f5b85c', a:  3*Math.PI/4 }     // 西北
+  ];
+  bagua.forEach(g => {
+    const label = makeBaguaLabel(g.symbol, g.name, g.color);
+    label.position.set(ringR * Math.cos(g.a), 0, ringR * Math.sin(g.a));
+    ringGroup.add(label);
+  });
+  // 每个卦位下加一个彩色小光点，贴住环管，辅助观察
+  const dot8Geo = new THREE.SphereGeometry(0.075, 16, 16);
+  bagua.forEach(g => {
+    const m = new THREE.MeshStandardMaterial({ color: g.color, emissive: g.color, emissiveIntensity: 0.6 });
+    const p = new THREE.Mesh(dot8Geo, m);
+    p.position.set(ringR * Math.cos(g.a), 0, ringR * Math.sin(g.a));
+    ringGroup.add(p);
+  });
+
+  // 整个场景根组
+  const root = new THREE.Group();
+  root.add(ringGroup, taijiGroup);
+  scene.add(root);
+
+  // 太极球初始放在环上
+  const tBall = { beta: 0 }; // 公转角度
+
+  // ---------- 动画循环 ----------
+  const clock = new THREE.Clock();
+  let paused = false;
+  let speedFactor = 1.0;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const dt = clock.getDelta();
+    if (!paused) {
+      // 太极球自转（交融）
+      taijiGroup.rotation.y += dt * 0.9 * speedFactor;
+      // 太极球绕环公转（水滴在环中旋转）
+      tBall.beta += dt * 0.55 * speedFactor;
+      taijiGroup.position.set(
+        ringR * Math.cos(tBall.beta),
+        0,
+        ringR * Math.sin(tBall.beta)
+      );
+      // 环自转（环的整体旋转——生生不息）
+      ringGroup.rotation.y += dt * 0.32 * speedFactor;
+      // 太极球沿轨道方向微微倾斜（姿态跟随轨道切线）
+      const tangent = -Math.sin(tBall.beta);
+      taijiGroup.rotation.z = tangent * 0.18;
+      // 星星缓慢旋转
+      // （stars 已作为独立对象加入 scene，这里不再处理）
+    }
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  // ---------- 交互 ----------
+  const pauseBtn = document.getElementById('pauseBtn');
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? '▶ 继续旋转' : '⏸ 暂停旋转';
+    pauseBtn.classList.toggle('on', paused);
+  });
+
+  const speedSlider = document.getElementById('speed');
+  const speedVal = document.getElementById('speedVal');
+  speedSlider.addEventListener('input', () => {
+    speedFactor = parseFloat(speedSlider.value);
+    speedVal.textContent = speedFactor.toFixed(1) + '×';
+  });
+
+  const viewBtn = document.getElementById('viewBtn');
+  viewBtn.addEventListener('click', () => {
+    controls.autoRotate = true;
+    // 俯视视角：缓慢动画过渡
+    const target = new THREE.Vector3(0, 10.5, 0.01);
+    const startPos = camera.position.clone();
+    const start = performance.now();
+    const dur = 900;
+    function tween(t) {
+      const k = Math.min(1, (t - start) / dur);
+      const e = 1 - Math.pow(1 - k, 3); // easeOutCubic
+      camera.position.lerpVectors(startPos, target, e);
+      camera.lookAt(0, 0, 0);
+      if (k < 1) requestAnimationFrame(tween);
+    }
+    requestAnimationFrame(tween);
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  animate();
+})();
+</script>
+</body>
+</html>
