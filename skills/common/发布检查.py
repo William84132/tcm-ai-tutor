@@ -31,8 +31,8 @@ SKIP_EXTS = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.pdf', '.exe', '.rar', '.
 def check_dir(root):
     issues = []
     for dirpath, dirnames, filenames in os.walk(root):
-        # 跳过 .git 内部（二进制对象误报）
-        dirnames[:] = [d for d in dirnames if d != '.git']
+        # 跳过 .git / __pycache__（二进制与缓存）
+        dirnames[:] = [d for d in dirnames if d not in ('.git', '__pycache__')]
         # 目录级个人内容
         for d in dirnames:
             if d in PERSONAL_DIRS:
