@@ -1,4 +1,4 @@
-{{Header
+﻿{{Header
 | title = 神農本草經
 | author = 孫星衍
 | times = 清

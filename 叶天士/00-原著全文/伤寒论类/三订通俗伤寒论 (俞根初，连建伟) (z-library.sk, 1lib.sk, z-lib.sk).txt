@@ -1,4 +1,4 @@
-[General Information]
+﻿[General Information]
 书名=三订通俗伤寒论
 作者=俞根初著
 页数=610
