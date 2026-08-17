@@ -109,3 +109,6 @@ tessdata/
 
 # Agent 激活状态（用户本地，由 AI 首次对话自动创建，禁止入库）
 **/.agent-state.md
+
+# 本地OCR修复工具（含本机绝对路径，不入库）
+fix_remaining_ocr.py
