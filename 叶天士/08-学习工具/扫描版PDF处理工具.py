@@ -302,7 +302,7 @@ def show_help():
 
 示例：
   python 扫描版PDF处理工具.py -i "中医古籍.pdf" -o "中医古籍.txt"
-  python 扫描版PDF处理工具.py -d "E:\我的PDF文件夹" -o "E:\我的文本文件夹"
+  python 扫描版PDF处理工具.py -d "<你的PDF文件夹>" -o "<你的文本文件夹>"
   python 扫描版PDF处理工具.py --check
     """
     print(help_text)
