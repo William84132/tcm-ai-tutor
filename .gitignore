@@ -112,3 +112,7 @@ tessdata/
 
 # æœ¬åœ°OCRä¿®å¤å·¥å…·ï¼ˆå«æœ¬æœºç»å¯¹è·¯å¾„ï¼Œä¸å…¥åº“ï¼‰
 fix_remaining_ocr.py
+
+# Ç±ÒâÊ¶¼ÇÒäÔËĞĞÊı¾İ£¨¸öÈËÑ§Çé£¬½ûÖ¹Èë¿â£©
+.subconscious/session_log*.jsonl
+.subconscious/whisper_package*.json
