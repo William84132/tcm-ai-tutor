@@ -7,7 +7,7 @@
 功能: 扫描个人内容/密钥/本机绝对路径，输出发布核对报告
   - 个人内容: 笔记/ 目录、进度追踪.md 含学习记录、个人 json、.env/config.json
   - 密钥: sk- 前缀、API_KEY 等
-  - 本机路径: 盘符反斜杠形式的绝对路径（如 盘符:\\目录）
+  - 本机路径: 盘符反斜杠形式的绝对路径（如 盘符:\\目录）、file:/// 协议形式
 """
 import io
 import os
@@ -15,14 +15,16 @@ import re
 import sys
 
 PERSONAL_DIRS = ['笔记', '已学习', '历史版本', '历史脚本', '历史课']
-PERSONAL_FILES = ['个人用户档案', '.env', 'config.json', '_sync_test']
+PERSONAL_FILES = ['个人用户档案', '.env', 'config.json', '_sync_test',
+                  # 潜意识记忆运行数据（个人学情，禁止入库）：.jsonl 覆盖 session_log.jsonl 等
+                  'whisper_package', '.jsonl']
 SECRET_PATTERNS = [
     re.compile(r'sk-[A-Za-z0-9]{10,}', re.I),
-    re.compile(r'(api[_-]?key|secret|token)\s*[:=]\s*\S{8,}', re.I),
+    re.compile(r'(api[_-]?key|secret|token)\s*[:=]\s*["\']?(?!helloworld|your_|example|xxx|change_me)\S{8,}', re.I),
 ]
 ABSOLUTE_PATTERNS = [
     re.compile(r'(?<![\\])[A-Za-z]:\\(?![a-z])', re.I),  # 盘符反斜杠形式（排除换行/制表转义）
-    re.compile(r'file:///[A-Za-z]:', re.I),              # file:///e:/
+    re.compile(r'file:///[A-Za-z]:', re.I),              # file:/// 协议盘符形式
 ]
 PROGRESS_LEARNED_MARKERS = ['已完成课次', '学习记录列表', '间隔复习追踪表']
 SKIP_EXTS = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.pdf', '.exe', '.rar', '.zip', '.epub', '.db', '.pkl'}
@@ -51,8 +53,8 @@ def check_dir(root):
                     c = f.read()
                 if re.search(r'\|\s*(已复习|新学|条文学习)\s*\|', c) or ('学习记录列表' in c and '尚无记录' not in c):
                     issues.append(('进度含学习记录(非初始模板)', rel))
-            # 文本内容检查
-            if ext in SKIP_EXTS or ext == '.py':
+            # 文本内容检查（含 .py：脚本中可能存在本机路径/密钥，2026-08-17 修复原跳过盲区）
+            if ext in SKIP_EXTS:
                 continue
             try:
                 with io.open(full, encoding='utf-8', errors='ignore') as f:
