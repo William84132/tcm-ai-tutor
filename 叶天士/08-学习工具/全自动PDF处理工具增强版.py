@@ -212,7 +212,7 @@ def main():
         print(f'  python "{os.path.basename(__file__)}" "PDF文件路径"')
         print()
         print("示例:")
-        print(f'  python "{os.path.basename(__file__)}" "e:\\我的古籍文件夹\\伤寒论.pdf"')
+        print(f'  python "{os.path.basename(__file__)}" "<你的古籍PDF路径>/伤寒论.pdf"')
         print()
         print("功能:")
         print("  - 自动检测PDF类型")
