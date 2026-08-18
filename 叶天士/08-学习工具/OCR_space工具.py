@@ -134,7 +134,7 @@ def main():
     print()
     print("选项1 - 处理图像文件夹:")
     print("  python OCR_space工具.py images <图像文件夹> <输出文件>")
-    print("  示例: python OCR_space工具.py images \"E:\\PDF图片\" output.txt")
+    print("  示例: python OCR_space工具.py images \"E:\\我的图片文件夹\" output.txt")
     print()
     print("选项2 - 检查PDF是否有文本:")
     print("  python OCR_space工具.py check <PDF文件>")
