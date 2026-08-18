@@ -20,7 +20,7 @@ PERSONAL_FILES = ['个人用户档案', '.env', 'config.json', '_sync_test',
                   'whisper_package', '.jsonl']
 SECRET_PATTERNS = [
     re.compile(r'sk-[A-Za-z0-9]{10,}', re.I),
-    re.compile(r'(api[_-]?key|secret|token)\s*[:=]\s*["\']?(?!helloworld|your_|example|xxx|change_me)\S{8,}', re.I),
+    re.compile(r'(api[_-]?key|secret|token)\s*[:=]\s*(?!["\']?helloworld|["\']?your_|["\']?example|["\']?xxx|["\']?change_me|sys\.argv)\S{8,}', re.I),
 ]
 ABSOLUTE_PATTERNS = [
     re.compile(r'(?<![\\])[A-Za-z]:\\(?![a-z])', re.I),  # 盘符反斜杠形式（排除换行/制表转义）
