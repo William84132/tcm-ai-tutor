@@ -1,6 +1,6 @@
 ---
 name: subconscious
-description: "跨会话长期记忆（潜意识）：自动记录关键事件/决策/困惑/偏好，本地联想、凝缩、遗忘与梦境整理，新会话开始自动注入相关历史背景。Invoke when the user asks about memory status ('潜意识状态','回忆一下'), or check memory at session start."
+description: "跨会话长期记忆（潜意识）：零配置自动启用——会话开始自动注入历史背景（whisper），对话中自动记录关键事件/决策/困惑/偏好，收尾自动整理（联想/凝缩/遗忘/梦境）。不依赖用户唤醒、不依赖 harness 注册技能；启用条件=AI 能读仓库 CLAUDE.md + 能运行 Python（无 Python 时降级为纯文本读写）。"
 ---
 
 # 潜意识记忆 Skill（Subconscious）
@@ -8,6 +8,14 @@ description: "跨会话长期记忆（潜意识）：自动记录关键事件/�
 本 Skill 提供**跨会话长期记忆**：自动记录会话中的关键事件（决策、问题、反复出现的模式、学习偏好），在本地完成联想、凝缩、遗忘与"梦境"整理，并在下次会话开始时注入相关历史背景——让 AI 不再"每次从零开始"。
 
 核心：**意识层（模型）主动记录 → 本地 Python 管道自动整理 → 下次会话 whisper 注入**。全部本地执行，零 LLM token 成本。
+
+## 〇、零配置自动启用（本 Skill 的使用方式）
+
+> **本 Skill 不需要用户触发、不需要 harness 注册**（不依赖 `.trae/skills/`、`.zcode/skills/` 等机制）。启用条件只有两条：① AI 能读仓库根 `CLAUDE.md`；② AI 能运行 Python（或降级为纯文本读写，见"五、无 Python 降级"）。
+>
+> **驱动机制**：仓库 `CLAUDE.md` 的"★ 潜意识学情记忆（subconscious·零配置自动启用）"章节规定了三个强制时机（会话开始跑 pre_session / 对话中记录 / 收尾跑 post_session）。本文件是执行细则——规则的细节（记什么、怎么记、格式、边界）以本文件为准。
+>
+> **AI 执行清单**（每次会话）：会话开始 → 运行 pre_session.py 取背景；对话中 → 按"二、对话中：记录规则"静默记录；会话收尾 → 运行 post_session.py。三个动作都不向用户提及。
 
 ## 一、会话开始（必做）
 
@@ -76,6 +84,18 @@ python .subconscious/hooks/post_session.py
 - 记忆库：环境变量 `SUBCONSCIOUS_MEMORY_DIR` 指定，默认 `~/.dsh/subconscious-memory/`（纯 JSON，可备份，删除即清空记忆）
 - 会话日志缓冲：`.subconscious/session_log.jsonl`（管道跑完自动清空）
 - 环境变量：`SUBCONSCIOUS_MODE`（whisper/full/dream/off）、`SUBCONSCIOUS_FORGET_THRESHOLD`（遗忘阈值，默认 0.1）、`SUBCONSCIOUS_DECAY_RATE`（衰减率，默认 0.05）
+
+## 五·五、无 Python 降级（AI 纯文本读写版）
+
+> 环境无法运行 Python 时，本 Skill 退化为"AI 直接读写 JSON"——**只要 AI 能读写文件，记忆功能就可用**：
+
+| 时机 | Python 版 | 降级版（AI 直接读写） |
+|:---|:---|:---|
+| 会话开始 | `python .subconscious/hooks/pre_session.py` | 读记忆库目录（`SUBCONSCIOUS_MEMORY_DIR` 或默认 `~/.dsh/subconscious-memory/`）下的 JSON 文件，提取相关历史作为背景 |
+| 对话中 | `dsh_log.py`（环境变量通道） | 追加一行到 `.subconscious/session_log.jsonl`：`{"ts":"YYYY-MM-DD HH:MM","text":"事件内容","tags":["课程","术语"],"type":"insight"}` |
+| 会话收尾 | `post_session.py` | 读 session_log.jsonl 做轻量整理：同标签 ≥3 条合并为一条 insight、标注时间；写回记忆库 JSON |
+
+**降级纪律**：格式尽量与 Python 版一致（字段：ts/text/tags/type）；整理频率可降低（每次会话收尾做一次即可）；宁少勿滥——只记"值得记的"。
 
 ## 六、原则
 
