@@ -1,5 +1,9 @@
 # 中医经典教学系统（TCM AI Tutor）
 
+![GitHub Release](https://img.shields.io/github/v/release/William84132/tcm-ai-tutor?style=for-the-badge&label=最新版本)
+![GitHub Downloads](https://img.shields.io/github/downloads/William84132/tcm-ai-tutor/total?style=for-the-badge&label=累计下载)
+[![GitHub Releases](https://img.shields.io/badge/📦-下载与更新日志-2ea44f?style=for-the-badge)](https://github.com/William84132/tcm-ai-tutor/releases)
+
 > 一套"开箱即用"的中医经典学习系统：**四模块递进**（黄帝内经精读（道）→ 经典基础（术中之道）→ 诊疗基础（案例驱动桥）→ 经典临床（术中之术，伤寒+金匮+温病三书合一）），以《黄帝内经》为理论根基，六经八纲为教学框架（脚手架，非唯一真理），配合 20 余位医家多学派视角 + 真实医案 + 意义系统教学法实现深度学习。
 >
 > **2026 年已上线"精装修（学习者主动性层）"**：在意义系统"教的确定性"之上，叠加问题锚定 / 候选误差 / 碰撞记录 / 纵向谱系 / 鼓励性总结等机制，让"学的主动性"与"教的确定性"互补（详见下方"精装修"章节）。
