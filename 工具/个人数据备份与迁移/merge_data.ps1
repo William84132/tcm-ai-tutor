@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 # 迁移合并个人数据 v1.0 — 把旧文件夹里的个人数据合并进当前文件夹（零依赖）
 # 用法: 迁移合并.bat "旧文件夹路径"  （或把旧文件夹拖到 迁移合并.bat 图标上）
-# 合并内容: 与 个人数据备份.ps1 相同的个人数据清单
+# 合并内容: 与 backup_data.ps1 相同的个人数据清单（目录冲突时逐文件合并：旧侧独有文件进入新目录，同名文件保留双方）
 # 原则: 绝不删除、绝不覆盖当前文件夹中的任何个人文件。
 #       若当前文件夹已存在同名个人文件，旧文件会以 "原名.旧版备份_时间戳" 保留，
 #       两边数据都不丢。公共文件（skills/、00-原著全文/ 等）不做任何处理，
@@ -39,20 +39,50 @@ function Merge-One {
         Write-Host ("  [--] 旧侧不存在，跳过: {0}" -f $Label)
         return
     }
-    $parent = Split-Path -Parent $NewDst
-    New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    $isDir = (Get-Item -LiteralPath $OldSrc).PSIsContainer
     if (-not (Test-Path -LiteralPath $NewDst)) {
+        # 新侧没有该个人数据 -> 整体复制
+        $parent = Split-Path -Parent $NewDst
+        New-Item -ItemType Directory -Path $parent -Force | Out-Null
         Copy-Item -LiteralPath $OldSrc -Destination $NewDst -Recurse -Force
         Write-Host ("  [OK] 新增: {0}" -f $Label)
         $script:added++
     }
-    else {
-        # 新侧已有同名个人文件: 不覆盖，旧侧另存为 原名.旧版备份_时间戳（原名+后缀，统一格式）
+    elseif (-not $isDir) {
+        # 新侧已有同名文件（非目录）-> 不覆盖，旧侧另存为 原名.旧版备份_时间戳
+        $parent = Split-Path -Parent $NewDst
         $name = Split-Path -Leaf $NewDst
         $alt  = Join-Path $parent ("{0}.旧版备份_{1}" -f $name, $stamp)
         Copy-Item -LiteralPath $OldSrc -Destination $alt -Recurse -Force
         Write-Host ("  [!!] 冲突保留双方: {0}  ->  {1}" -f $Label, (Split-Path -Leaf $alt))
         $script:conflict++
+    }
+    else {
+        # 双方都是目录 -> 逐文件递归合并（旧侧独有文件进入新目录，同名文件保留双方）
+        Merge-Dir $OldSrc $NewDst $Label
+    }
+}
+
+function Merge-Dir {
+    param([string]$OldDir, [string]$NewDir, [string]$Label)
+    New-Item -ItemType Directory -Path $NewDir -Force | Out-Null
+    $items = Get-ChildItem -LiteralPath $OldDir -Force
+    foreach ($it in $items) {
+        $newItem = Join-Path $NewDir $it.Name
+        if ($it.PSIsContainer) {
+            Merge-Dir $it.FullName $newItem ($Label + '/' + $it.Name)
+        }
+        elseif (Test-Path -LiteralPath $newItem) {
+            $alt = Join-Path $NewDir ("{0}.旧版备份_{1}" -f $it.Name, $stamp)
+            Copy-Item -LiteralPath $it.FullName -Destination $alt -Force
+            Write-Host ("  [!!] 冲突保留双方: {0}/{1}  ->  {2}" -f $Label, $it.Name, (Split-Path -Leaf $alt))
+            $script:conflict++
+        }
+        else {
+            Copy-Item -LiteralPath $it.FullName -Destination $newItem -Force
+            Write-Host ("  [OK] 新增: {0}/{1}" -f $Label, $it.Name)
+            $script:added++
+        }
     }
 }
 
