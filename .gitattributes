@@ -1,0 +1,3 @@
+# 强制 .bat 以 CRLF 存储与检出 —— cmd 批处理必须 CRLF 换行，否则报错
+# （GitHub zip 下载不解换行转换，仓库内必须就是 CRLF）
+*.bat text eol=crlf

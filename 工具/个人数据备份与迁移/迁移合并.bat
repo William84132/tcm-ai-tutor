@@ -1,6 +1,6 @@
 @echo off
 rem ============================================================
-rem  Migrate & Merge Personal Data v1.0 (迁移合并个人数据)
+rem  Migrate & Merge Personal Data
 rem  Usage: drag your OLD project folder onto this file icon,
 rem         or run: 迁移合并.bat "D:\old-project-folder"
 rem
@@ -18,10 +18,10 @@ if "%~1"=="" (
   exit /b 1
 )
 echo ============================================================
-echo  Migrate and Merge Personal Data - 迁移合并个人数据
+echo  Migrate and Merge Personal Data
 echo  Old folder : %~1
 echo ============================================================
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0迁移合并.ps1" -OldRoot "%~1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0merge_data.ps1" -OldRoot "%~1"
 if errorlevel 1 (
   echo.
   echo [ERROR] Merge failed. Check the messages above.
