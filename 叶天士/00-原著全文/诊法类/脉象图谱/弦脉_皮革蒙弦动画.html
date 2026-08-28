@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弦脉 · 皮革蒙弦（三层指感动画）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif;
+    background: #f5f0e8; color: #2c2c2c;
+    display: flex; justify-content: center; padding: 32px 16px;
+  }
+  .card {
+    max-width: 860px; width: 100%;
+    background: #fdfbf7; border: 1px solid #d8c9b2; border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(90,58,32,.10);
+    padding: 28px 32px 24px;
+  }
+  h1 { font-size: 26px; letter-spacing: 2px; color: #5a3a20; }
+  .sub { margin-top: 8px; font-size: 14px; color: #7a6a55; line-height: 1.7; }
+  svg { display: block; margin: 18px auto 0; width: 100%; height: auto; }
+  .foot {
+    margin-top: 16px; padding-top: 14px; border-top: 1px dashed #d8c9b2;
+    font-size: 13px; color: #7a6a55; line-height: 1.9;
+  }
+  .foot b { color: #5a3a20; }
+
+  /* 档位动画：手指与弦同步下压（浮→中→沉→浮），12s 循环 */
+  @keyframes moveStage {
+    0%   { transform: translateY(0px); }
+    22%  { transform: translateY(0px); }
+    30%  { transform: translateY(70px); }
+    52%  { transform: translateY(70px); }
+    60%  { transform: translateY(140px); }
+    82%  { transform: translateY(140px); }
+    92%  { transform: translateY(0px); }
+    100% { transform: translateY(0px); }
+  }
+  /* 高频顶手振动：弦+皮革被搏动顶着，小幅快速颤振 */
+  @keyframes vib {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  .finger-pos { animation: moveStage 12s ease-in-out infinite; }
+  .string-pos { animation: moveStage 12s ease-in-out infinite; }
+  .string-vib { animation: vib .3s linear infinite; }
+
+  /* 右侧指感标签：随阶段切换高亮 */
+  @keyframes lbl1 { 0%,22%{opacity:1} 28%,100%{opacity:.25} }
+  @keyframes lbl2 { 0%,28%{opacity:.25} 34%,50%{opacity:1} 56%,100%{opacity:.25} }
+  @keyframes lbl3 { 0%,58%{opacity:.25} 64%,80%{opacity:1} 86%,100%{opacity:.25} }
+  .l1 { animation: lbl1 12s linear infinite; }
+  .l2 { animation: lbl2 12s linear infinite; }
+  .l3 { animation: lbl3 12s linear infinite; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>弦脉 · 皮革蒙弦</h1>
+  <p class="sub">端直以长，如按琴弦 —— 一根小提琴弦，蒙着一层柔软的皮革；手指按下去，弦皮贴着指腹，被搏动顶着手</p>
+
+  <svg viewBox="0 0 800 460" role="img" aria-label="弦脉皮革蒙弦三层指感动画">
+    <!-- 层位标尺：浮 / 中 / 沉 -->
+    <line x1="60" y1="255" x2="92" y2="255" stroke="#bbbbbb" stroke-width="2"/>
+    <line x1="60" y1="325" x2="92" y2="325" stroke="#bbbbbb" stroke-width="2"/>
+    <line x1="60" y1="395" x2="92" y2="395" stroke="#bbbbbb" stroke-width="2"/>
+    <text x="42" y="259" font-size="15" fill="#999999">浮</text>
+    <text x="42" y="329" font-size="15" fill="#999999">中</text>
+    <text x="42" y="399" font-size="15" fill="#999999">沉</text>
+
+    <!-- 手指：指节 + 指腹（侧视朝下），随档位下压 -->
+    <g class="finger-pos">
+      <g class="finger">
+        <defs>
+          <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f6d2b2"/>
+            <stop offset="1" stop-color="#eab98f"/>
+          </linearGradient>
+          <linearGradient id="leather" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#dcbc96"/>
+            <stop offset=".5" stop-color="#c9a277"/>
+            <stop offset="1" stop-color="#b08a5e"/>
+          </linearGradient>
+        </defs>
+        <!-- 指节 -->
+        <rect x="300" y="150" width="95" height="72" rx="20" fill="url(#skin)" stroke="#b98a6a" stroke-width="2"/>
+        <!-- 指腹（朝下，底 y≈252） -->
+        <ellipse cx="347.5" cy="232" rx="48" ry="22" fill="#f8d9bb" stroke="#b98a6a" stroke-width="2"/>
+        <!-- 指腹弧度 -->
+        <path d="M305,228 Q347.5,246 390,228" fill="none" stroke="#d9a88a" stroke-width="2"/>
+      </g>
+    </g>
+
+    <!-- 琴弦 + 皮革蒙皮：整体随档位下移，内层高频振动（弦皮齐顶手） -->
+    <g class="string-pos">
+      <g class="string-vib">
+        <!-- 接触点压力阴影（指腹正下方） -->
+        <ellipse cx="347.5" cy="272" rx="22" ry="7" fill="rgba(139,90,42,.22)"/>
+        <!-- 皮革蒙皮（宽条带，柔和高光，比弦略宽） -->
+        <rect x="160" y="238" width="480" height="36" rx="10" fill="url(#leather)" stroke="#9c7448" stroke-width="1.5"/>
+        <line x1="170" y1="246" x2="630" y2="246" stroke="#e8d2b8" stroke-width="2" opacity=".8"/>
+        <!-- 琴弦本体（端直，露出皮革两端） -->
+        <line x1="150" y1="256" x2="650" y2="256" stroke="#6b4f2e" stroke-width="3" stroke-linecap="round"/>
+        <!-- 弦尾：两端琴轴点 -->
+        <circle cx="150" cy="256" r="5" fill="#8a6a4a"/>
+        <circle cx="650" cy="256" r="5" fill="#8a6a4a"/>
+      </g>
+    </g>
+
+    <!-- 右侧指感标签（随阶段高亮） -->
+    <g font-size="16" font-family="Songti SC, SimSun, serif">
+      <text class="l1" x="700" y="259" fill="#3c2eca">轻按即得</text>
+      <text class="l2" x="700" y="329" fill="#3c2eca">中取仍弦</text>
+      <text class="l3" x="700" y="399" fill="#3c2eca">沉按如故</text>
+    </g>
+  </svg>
+
+  <div class="foot">
+    <b>濒湖脉学：</b>弦脉"端直以长，如按琴弦"（《脉经》：按之如琴弦，梗梗正直，无有屈挠）——<b>浮中沉三层皆弦</b>，弦脉举按皆弦，不因按深改变指感。<br>
+    <b>皮革点睛：</b>弦上蒙皮＝弦中带柔。鉴别：<b>弦</b>如琴弦，柔韧端直；<b>紧</b>如转索，绷急弹手（左右弹人手）。<br>
+    <b>动画循环：</b>轻按（浮）→ 下压（中）→ 按至骨（沉）→ 回到浮层；弦皮始终贴着指腹顶手。
+  </div>
+</div>
+</body>
+</html>
