@@ -2,6 +2,7 @@
 # 迁移合并个人数据 v1.0 — 把旧文件夹里的个人数据合并进当前文件夹（零依赖）
 # 用法: 迁移合并.bat "旧文件夹路径"  （或把旧文件夹拖到 迁移合并.bat 图标上）
 # 合并内容: 与 backup_data.ps1 相同的个人数据清单（目录冲突时逐文件合并：旧侧独有文件进入新目录，同名文件保留双方）
+# 含潜意识记忆库：从旧文件夹/个人数据/潜意识记忆库/ 合并回当前环境记忆库路径
 # 原则: 绝不删除、绝不覆盖当前文件夹中的任何个人文件。
 #       若当前文件夹已存在同名个人文件，旧文件会以 "原名.旧版备份_时间戳" 保留，
 #       两边数据都不丢。公共文件（skills/、00-原著全文/ 等）不做任何处理，
@@ -108,6 +109,10 @@ Write-Host "-- 3. 应用数据 (tcm-tutor-agent) --"
 Merge-One (Join-Path $oldApp '.env')             (Join-Path $newApp '.env')             'tcm-tutor-agent/.env'
 Merge-One (Join-Path $oldApp 'data\users.db')    (Join-Path $newApp 'data\users.db')    'tcm-tutor-agent/data/users.db'
 Merge-One (Join-Path $oldApp 'data\config.json') (Join-Path $newApp 'data\config.json') 'tcm-tutor-agent/data/config.json'
+Write-Host "-- 4. 潜意识记忆库 (subconscious) --"
+$memDir = $env:SUBCONSCIOUS_MEMORY_DIR
+if (-not $memDir) { $memDir = Join-Path $HOME '.dsh/subconscious-memory' }
+Merge-One (Join-Path $OldRoot '个人数据\潜意识记忆库') $memDir '个人数据/潜意识记忆库'
 Write-Host ""
 Write-Host "完成: 新增 $added 项, 冲突保留双方 $conflict 项（旧文件以 .旧版备份_时间戳 命名，双方都在）。"
 Write-Host ""

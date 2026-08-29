@@ -6,6 +6,7 @@
 #                       04-黄帝内经（复习）/ 05-经典基础/ 06-诊疗基础/ 07-温病历史课（旧）/
 #   vault 进度文件:     学习进度追踪.md / 快速入门.md
 #   应用数据:          tcm-tutor-agent\.env / data\users.db / data\config.json
+#   潜意识记忆库:      ~/.dsh/subconscious-memory/ （或 SUBCONSCIOUS_MEMORY_DIR 指定）
 # 原则: 只复制、绝不删除任何源文件。
 
 param([string]$Target = "")
@@ -66,6 +67,10 @@ Write-Host "-- 3. 应用数据 (tcm-tutor-agent) --"
 Copy-One (Join-Path $app '.env')                'tcm-tutor-agent/.env'
 Copy-One (Join-Path $app 'data\users.db')       'tcm-tutor-agent/data/users.db'
 Copy-One (Join-Path $app 'data\config.json')    'tcm-tutor-agent/data/config.json'
+Write-Host "-- 4. 潜意识记忆库 (subconscious) --"
+$memDir = $env:SUBCONSCIOUS_MEMORY_DIR
+if (-not $memDir) { $memDir = Join-Path $HOME '.dsh/subconscious-memory' }
+Copy-One $memDir '个人数据/潜意识记忆库'
 Write-Host ""
 Write-Host "完成: 复制 $copied 项, 跳过 $skipped 项。"
 Write-Host "备份位置: $Target"
