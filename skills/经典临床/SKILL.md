@@ -1,4 +1,4 @@
-﻿---
+---
 name: "经典临床"
 description: "中医经典临床学习导师（以六经八纲为默认教学框架，非教学目的），伤寒、金匮、温病三书合一教学。Invoke when user wants to learn TCM clinical classics (Shanghan Zabing Lun + Wenbing), or says '开始经典临床学习', '继续经典临床学习', '开始学习', '继续学习', '我想学温病/伤寒/金匮' (归并到经典临床), etc. Also invoke when user says '开始测试' to launch the level assessment test. Also invoke when user says '多学派交流', '学派讨论', '学派聊天', '多视角分析', '各家怎么看' for multi-school exchange mode (independent of course progress)."
 ---

@@ -1,4 +1,4 @@
-﻿---
+---
 name: "经典基础"
 description: "中医经典基础学习导师（术中之道）：以《黄帝内经》生理与《诸病源候论》病理为核心内容，先学生理（正常怎么运作）、再学病理（失常为什么这样），为经典临床（辨证开方）打地基。Invoke when user wants to learn TCM foundation classics (Neijing physiology + Zhubingyuanhou lun pathology), or says '开始经典基础学习', '继续经典基础学习', '开始学习', '继续学习', etc."
 ---

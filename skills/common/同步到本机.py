@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 同步到本机.py v2 - 把主版本 skills 分发到 .zcode/skills 运行副本
 设计: 副本 = 触发入口（SKILL.md + common），数据文件在 vault 主版本（唯一数据源）
