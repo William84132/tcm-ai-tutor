@@ -11,7 +11,7 @@
 核心规则（防止个人内容外泄）：
   1. 排除 进度追踪.md —— 发布版保留空模板（用户在本地填自己的进度）
   2. 排除 __pycache__ / .pyc / session_log.jsonl / 记忆库运行数据
-  3. 目标编码统一 UTF-8 with BOM + LF（GitHub 与 Windows 记事本双友好）
+  3. 目标编码统一 UTF-8（无 BOM）+ LF（与运行副本一致，避免 BOM 漂移）
   4. 内容归一化比对（去 BOM + CRLF→LF）后 hash 相同则跳过，避免无意义的文件改动
 
 用法：
@@ -47,7 +47,7 @@ def norm_hash(path):
 
 
 def write_publish(dst, text):
-    """按发布规范写盘：UTF-8 with BOM + LF。"""
+    """按发布规范写盘：UTF-8（无 BOM）+ LF。"""
     text = text.replace('\r\n', '\n')
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     with open(dst, 'wb') as f:
@@ -77,9 +77,9 @@ def sync(src, dst, dry_run=False):
             new_hash = hashlib.md5(text.replace('\r\n', '\n').encode('utf-8')).hexdigest()
 
             if os.path.exists(d) and norm_hash(d) == new_hash:
-                # 内容一致 —— 但如果目标编码不规范（无 BOM 或 CRLF），仍重写一次
+                # 内容一致 —— 但若目标编码不规范（带 BOM 或含 CRLF），仍重写一次归一化
                 raw = open(d, 'rb').read()
-                if raw[:3] == b'\xef\xbb\xbf' and b'\r\n' not in raw:
+                if raw[:3] != b'\xef\xbb\xbf' and b'\r\n' not in raw:
                     skipped.append(rel)
                     continue
 

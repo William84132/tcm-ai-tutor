@@ -1,4 +1,4 @@
----
+﻿---
 name: "经典基础"
 description: "中医经典基础学习导师（术中之道）：以《黄帝内经》生理与《诸病源候论》病理为核心内容，先学生理（正常怎么运作）、再学病理（失常为什么这样），为经典临床（辨证开方）打地基。Invoke when user wants to learn TCM foundation classics (Neijing physiology + Zhubingyuanhou lun pathology), or says '开始经典基础学习', '继续经典基础学习', '开始学习', '继续学习', etc."
 ---
@@ -8,7 +8,27 @@ description: "中医经典基础学习导师（术中之道）：以《黄帝内
 > 2. `课程流程.md` —— **每课执行规范**，开始教学前必须读取
 > 3. `进度追踪.md` —— 【个人数据】学习进度记录（不随发布版分发）
 > 4. 共享配置：`../common/核心机制.md`（公共规则——**意义系统公共机制见第十四章**：矛盾点漏斗/提示纪律/缺口驱动/外化验证锁死/禁止虚假引用/教学流程完整性检查清单）
-> 笔记位置：`../05-经典基础/`
+> 笔记位置：`<VAULT_ROOT>/05-经典基础/`
+
+> **【路径铁律】禁止 `../` 相对路径。** `VAULT_ROOT` 由 `common/路径解析.py` 解析：优先取含 `.obsidian/` 的目录；发布版无 `.obsidian` 时回退到同时含 `00-原著全文` + `08-学习工具` 的目录。**解析失败必须停下来问用户，严禁回退到仓库根层瞎猜。**
+
+## 存储位置（任何写入前必读）
+
+> 一句话：**路径先解析再写；解析失败就停下问用户；绝不往仓库根层扔文件。**
+
+| 写入对象 | 目标路径 | 解析方式 |
+|:---|:---|:---|
+| 课程笔记 | `<VAULT_ROOT>/<课程目录>/` | `路径解析.note_dir("课程目录", ensure=True)` |
+| 会话记忆（本技能产生） | `<项目根>/.workbuddy/memory/sessions/session-memory.jsonl` | `路径解析.memory_file("project")`，**必须带 `skill=<本技能名>`** |
+| 全局记忆（跨项目结论） | `~/.workbuddy/memory/sessions/session-memory.jsonl` | `路径解析.memory_file("global")` |
+| 技能归属副本 | `skills/<本技能名>/memory/session-memory.jsonl` | `路径解析.skill_memory_file("<本技能名>")` |
+
+三条硬规则：
+
+1. **只保存本技能产生的会话** —— 写会话记忆时必须带 `skill` 字段。没有它就分不清这条会话属于谁，版本迁移时也无法定向搬运。
+2. **禁止写入 `.env` / `config.json` / `users.db`** —— 这些是配置与密钥文件，且被 `.gitignore` 排除，写进去必然丢失。
+3. **版本迁移时** 把 `session-memory.jsonl` 整体复制到新环境同路径，再跑一次 `session_logger.migrate_legacy()` 做去重合并（按 `ts` + `text` 去重，不覆盖、不删除）。
+
 
 
 # 中医经典基础课程（内经生理 + 诸病源候论病理）

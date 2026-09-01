@@ -1,4 +1,4 @@
----
+﻿---
 name: "经典临床"
 description: "中医经典临床学习导师（以六经八纲为默认教学框架，非教学目的），伤寒、金匮、温病三书合一教学。Invoke when user wants to learn TCM clinical classics (Shanghan Zabing Lun + Wenbing), or says '开始经典临床学习', '继续经典临床学习', '开始学习', '继续学习', '我想学温病/伤寒/金匮' (归并到经典临床), etc. Also invoke when user says '开始测试' to launch the level assessment test. Also invoke when user says '多学派交流', '学派讨论', '学派聊天', '多视角分析', '各家怎么看' for multi-school exchange mode (independent of course progress)."
 ---
@@ -10,7 +10,27 @@ description: "中医经典临床学习导师（以六经八纲为默认教学框
 > 4. `水平评估测试.md` —— 评估测试题库（用户说"开始测试"时使用）
 > 5. `进度追踪.md` —— 【个人数据】学习进度记录（不随发布版分发）
 > 6. 共享配置：`../common/核心机制.md`（公共规则，含意义先行/多学派/防错机制）+ `../common/学派触发映射表.json`（多学派分析强制前置）
-> 笔记位置：`../01-经典临床（正课）/`（正课）、`../02-经典临床（复习）/`（复习）
+> 笔记位置：`<VAULT_ROOT>/01-经典临床（正课）/`（正课）、`<VAULT_ROOT>/02-经典临床（复习）/`（复习）
+
+> **【路径铁律】禁止 `../` 相对路径。** `VAULT_ROOT` 由 `common/路径解析.py` 解析：优先取含 `.obsidian/` 的目录；发布版无 `.obsidian` 时回退到同时含 `00-原著全文` + `08-学习工具` 的目录。**解析失败必须停下来问用户，严禁回退到仓库根层瞎猜。**
+
+## 存储位置（任何写入前必读）
+
+> 一句话：**路径先解析再写；解析失败就停下问用户；绝不往仓库根层扔文件。**
+
+| 写入对象 | 目标路径 | 解析方式 |
+|:---|:---|:---|
+| 课程笔记 | `<VAULT_ROOT>/<课程目录>/` | `路径解析.note_dir("课程目录", ensure=True)` |
+| 会话记忆（本技能产生） | `<项目根>/.workbuddy/memory/sessions/session-memory.jsonl` | `路径解析.memory_file("project")`，**必须带 `skill=<本技能名>`** |
+| 全局记忆（跨项目结论） | `~/.workbuddy/memory/sessions/session-memory.jsonl` | `路径解析.memory_file("global")` |
+| 技能归属副本 | `skills/<本技能名>/memory/session-memory.jsonl` | `路径解析.skill_memory_file("<本技能名>")` |
+
+三条硬规则：
+
+1. **只保存本技能产生的会话** —— 写会话记忆时必须带 `skill` 字段。没有它就分不清这条会话属于谁，版本迁移时也无法定向搬运。
+2. **禁止写入 `.env` / `config.json` / `users.db`** —— 这些是配置与密钥文件，且被 `.gitignore` 排除，写进去必然丢失。
+3. **版本迁移时** 把 `session-memory.jsonl` 整体复制到新环境同路径，再跑一次 `session_logger.migrate_legacy()` 做去重合并（按 `ts` + `text` 去重，不覆盖、不删除）。
+
 
 > **【转正声明】** 本文件为《经典临床》Skill 的"七杠杆精装修"正式版（2026年用户确认转正，上线运行，按用户反馈迭代）。在意义先行机制（矛盾点漏斗/L1-L4分层/处方验证关/间隔重复/完整性清单）之上叠加"学习者主动性层"（七杠杆：问题锚定/候选误差/思想凝固/战略性搁置/碰撞过滤/纵向谱系/问题驱动精读），细则见 `精装修七杠杆机制.md`。
 

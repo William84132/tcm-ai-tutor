@@ -116,3 +116,11 @@ fix_remaining_ocr.py
 # 潜意识记忆运行数据（个人学情，禁止入库）
 .subconscious/session_log*.jsonl
 .subconscious/whisper_package*.json
+
+# session-memory v2 (personal session data - never commit)
+**/session-memory.jsonl
+**/session-memory.*.jsonl
+**/skills/*/memory/
+.workbuddy/memory/sessions/
+.workbuddy/memory/*.md
+.subconscious/.session_memory_pointer

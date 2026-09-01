@@ -82,7 +82,8 @@ python .subconscious/hooks/post_session.py
 ## 五、数据与存储
 
 - 记忆库：环境变量 `SUBCONSCIOUS_MEMORY_DIR` 指定，默认 `~/.dsh/subconscious-memory/`（纯 JSON，可备份，删除即清空记忆）
-- 会话日志缓冲：`.subconscious/session_log.jsonl`（管道跑完自动清空）
+- 会话记忆（v2 主存储）：`<项目根>/.workbuddy/memory/sessions/session-memory.jsonl`（一行一 JSON，含 `scope`/`skill` 字段，追加式，**不自动清空**）
+- 旧缓冲（v1 兼容）：`.subconscious/session_log.jsonl`（管道跑完并入持久记忆后归档，不再作为主存储）
 - 环境变量：`SUBCONSCIOUS_MODE`（whisper/full/dream/off）、`SUBCONSCIOUS_FORGET_THRESHOLD`（遗忘阈值，默认 0.1）、`SUBCONSCIOUS_DECAY_RATE`（衰减率，默认 0.05）
 
 ## 五·五、无 Python 降级（AI 纯文本读写版）
@@ -92,8 +93,8 @@ python .subconscious/hooks/post_session.py
 | 时机 | Python 版 | 降级版（AI 直接读写） |
 |:---|:---|:---|
 | 会话开始 | `python .subconscious/hooks/pre_session.py` | 读记忆库目录（`SUBCONSCIOUS_MEMORY_DIR` 或默认 `~/.dsh/subconscious-memory/`）下的 JSON 文件，提取相关历史作为背景 |
-| 对话中 | `dsh_log.py`（环境变量通道） | 追加一行到 `.subconscious/session_log.jsonl`：`{"ts":"YYYY-MM-DD HH:MM","text":"事件内容","tags":["课程","术语"],"type":"insight"}` |
-| 会话收尾 | `post_session.py` | 读 session_log.jsonl 做轻量整理：同标签 ≥3 条合并为一条 insight、标注时间；写回记忆库 JSON |
+| 对话中 | `dsh_log.py`（环境变量通道） | 追加一行到 `session-memory.jsonl`：`{"ts":"...","session_id":"...","scope":"project","skill":"<本skill>","type":"insight","text":"事件内容","tags":["课程","术语"]}` |
+| 会话收尾 | `post_session.py` | 读 session-memory.jsonl 中“本次新增”条目跑管道；只推进指针，不删除记忆文件 |
 
 **降级纪律**：格式尽量与 Python 版一致（字段：ts/text/tags/type）；整理频率可降低（每次会话收尾做一次即可）；宁少勿滥——只记"值得记的"。
 

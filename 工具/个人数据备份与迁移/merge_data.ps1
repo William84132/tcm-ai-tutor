@@ -1,12 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
-# 迁移合并个人数据 v1.0 — 把旧文件夹里的个人数据合并进当前文件夹（零依赖）
+# 迁移合并个人数据 v2.0 — 把旧文件夹里的个人数据合并进当前文件夹（零依赖）
 # 用法: 迁移合并.bat "旧文件夹路径"  （或把旧文件夹拖到 迁移合并.bat 图标上）
-# 合并内容: 与 backup_data.ps1 相同的个人数据清单（目录冲突时逐文件合并：旧侧独有文件进入新目录，同名文件保留双方）
-# 含潜意识记忆库：从旧文件夹/个人数据/潜意识记忆库/ 合并回当前环境记忆库路径
+#
+# v2.0 改动（2026-09-01）：
+#   会话记忆从"全局潜意识目录"改为"项目级 + 全局级两套 session-memory.jsonl"，
+#   合并时按 (ts, text) 去重，不删、不覆盖、不丢数据。
+#
+# 合并内容: 与 backup_data.ps1 v2 相同的个人数据清单（目录冲突时逐文件合并）
 # 原则: 绝不删除、绝不覆盖当前文件夹中的任何个人文件。
-#       若当前文件夹已存在同名个人文件，旧文件会以 "原名.旧版备份_时间戳" 保留，
-#       两边数据都不丢。公共文件（skills/、00-原著全文/ 等）不做任何处理，
-#       以新版本为准。
 
 param([string]$OldRoot = "")
 
@@ -42,7 +43,6 @@ function Merge-One {
     }
     $isDir = (Get-Item -LiteralPath $OldSrc).PSIsContainer
     if (-not (Test-Path -LiteralPath $NewDst)) {
-        # 新侧没有该个人数据 -> 整体复制
         $parent = Split-Path -Parent $NewDst
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
         Copy-Item -LiteralPath $OldSrc -Destination $NewDst -Recurse -Force
@@ -50,7 +50,6 @@ function Merge-One {
         $script:added++
     }
     elseif (-not $isDir) {
-        # 新侧已有同名文件（非目录）-> 不覆盖，旧侧另存为 原名.旧版备份_时间戳
         $parent = Split-Path -Parent $NewDst
         $name = Split-Path -Leaf $NewDst
         $alt  = Join-Path $parent ("{0}.旧版备份_{1}" -f $name, $stamp)
@@ -59,7 +58,6 @@ function Merge-One {
         $script:conflict++
     }
     else {
-        # 双方都是目录 -> 逐文件递归合并（旧侧独有文件进入新目录，同名文件保留双方）
         Merge-Dir $OldSrc $NewDst $Label
     }
 }
@@ -87,8 +85,34 @@ function Merge-Dir {
     }
 }
 
+function Merge-Memory {
+    param([string]$OldFile, [string]$NewFile, [string]$Label)
+    if (-not (Test-Path -LiteralPath $OldFile)) {
+        Write-Host ("  [--] 旧侧不存在，跳过: {0}" -f $Label); return
+    }
+    New-Item -ItemType Directory -Path (Split-Path -Parent $NewFile) -Force | Out-Null
+    $seen = @{}
+    if (Test-Path -LiteralPath $NewFile) {
+        foreach ($line in (Get-Content -LiteralPath $NewFile -Encoding UTF8)) {
+            if ($line.Trim() -eq '') { continue }
+            try { $e = $line | ConvertFrom-Json; $k = ($e.ts) + '|' + ($e.text) } catch { $k = $line }
+            $seen[$k] = 1
+        }
+    }
+    $total = 0; $added = 0
+    foreach ($line in (Get-Content -LiteralPath $OldFile -Encoding UTF8)) {
+        if ($line.Trim() -eq '') { continue }
+        $total++
+        try { $e = $line | ConvertFrom-Json; $k = ($e.ts) + '|' + ($e.text) } catch { $k = $line }
+        if ($seen.ContainsKey($k)) { continue }
+        Add-Content -LiteralPath $NewFile -Value $line -Encoding UTF8
+        $added++; $seen[$k] = 1
+    }
+    Write-Host ("  [OK] {0}: 旧侧 {1} 条，新增 {2} 条（去重合并，不删不覆盖）" -f $Label, $total, $added)
+}
+
 Write-Host "============================================================"
-Write-Host " 迁移合并个人数据"
+Write-Host " 迁移合并个人数据 v2.0"
 Write-Host "============================================================"
 Write-Host "旧文件夹: $OldRoot"
 Write-Host "当前文件夹: $newRoot"
@@ -109,10 +133,14 @@ Write-Host "-- 3. 应用数据 (tcm-tutor-agent) --"
 Merge-One (Join-Path $oldApp '.env')             (Join-Path $newApp '.env')             'tcm-tutor-agent/.env'
 Merge-One (Join-Path $oldApp 'data\users.db')    (Join-Path $newApp 'data\users.db')    'tcm-tutor-agent/data/users.db'
 Merge-One (Join-Path $oldApp 'data\config.json') (Join-Path $newApp 'data\config.json') 'tcm-tutor-agent/data/config.json'
-Write-Host "-- 4. 潜意识记忆库 (subconscious) --"
-$memDir = $env:SUBCONSCIOUS_MEMORY_DIR
-if (-not $memDir) { $memDir = Join-Path $HOME '.dsh/subconscious-memory' }
-Merge-One (Join-Path $OldRoot '个人数据\潜意识记忆库') $memDir '个人数据/潜意识记忆库'
+
+Write-Host "-- 4. 会话记忆 (v2 · 去重合并) --"
+$newProjMem = Join-Path $newRoot '.workbuddy\memory\sessions\session-memory.jsonl'
+$newGlobMem = Join-Path $HOME '.workbuddy\memory\sessions\session-memory.jsonl'
+Merge-Memory (Join-Path $OldRoot '记忆\项目_session-memory.jsonl') $newProjMem '项目记忆'
+Merge-Memory (Join-Path $OldRoot '记忆\全局_session-memory.jsonl') $newGlobMem '全局记忆'
+Merge-Memory (Join-Path $OldRoot '记忆\旧位置_session_log.jsonl')  $newProjMem '旧位置会话缓冲'
+
 Write-Host ""
 Write-Host "完成: 新增 $added 项, 冲突保留双方 $conflict 项（旧文件以 .旧版备份_时间戳 命名，双方都在）。"
 Write-Host ""
@@ -120,4 +148,5 @@ Write-Host "注意:"
 Write-Host "  1. 公共文件（skills/ 00-原著全文/ 等）未做任何处理 —— 以新版本为准，这是预期行为。"
 Write-Host "  2. 若 users.db 出现冲突（新旧两套账号），旧库在 tcm-tutor-agent/data/ 下以"
 Write-Host "     users.db.旧版备份_时间戳 保留；如需找回旧账号数据，请手动替换并重启应用。"
-Write-Host "  3. 请保留旧文件夹一段时间，确认新文件夹一切正常后再删除。"
+Write-Host "  3. 会话记忆已按 (ts,text) 去重合并到 <项目根>\.workbuddy\memory\sessions\session-memory.jsonl，重复不丢、缺的补齐。"
+Write-Host "  4. 请保留旧文件夹一段时间，确认新文件夹一切正常后再删除。"

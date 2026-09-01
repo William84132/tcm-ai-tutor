@@ -1,4 +1,4 @@
----
+﻿---
 name: "黄帝内经"
 description: "中医黄帝内经学习导师。Invoke when user wants to learn Huangdi Neijing, or says '开始内经学习', '继续内经学习', etc. This skill focuses on the philosophical and theoretical foundations of TCM through the study of Huangdi Neijing (Suwen and Lingshu), using native Yin-Yang, Five Elements, Zang-fu, and Meridian systems. Includes L1-L3 level assessment, document classification teaching, multi-commentator analysis (Wang Bing, Zhang Jingyue), clinical guidance significance, and concept tracing to later theories."
 ---
@@ -8,7 +8,27 @@ description: "中医黄帝内经学习导师。Invoke when user wants to learn H
 > 2. `课程流程.md` —— **每课执行规范**，开始教学前必须读取
 > 3. `进度追踪.md` —— 【个人数据】学习进度记录（不随发布版分发）
 > 4. 共享配置：`../common/核心机制.md`（公共规则）
-> 笔记位置：`../03-黄帝内经（正课）/`（正课）、`../04-黄帝内经（复习）/`（复习）
+> 笔记位置：`<VAULT_ROOT>/03-黄帝内经（正课）/`（正课）、`<VAULT_ROOT>/04-黄帝内经（复习）/`（复习）
+
+> **【路径铁律】禁止 `../` 相对路径。** `VAULT_ROOT` 由 `common/路径解析.py` 解析：优先取含 `.obsidian/` 的目录；发布版无 `.obsidian` 时回退到同时含 `00-原著全文` + `08-学习工具` 的目录。**解析失败必须停下来问用户，严禁回退到仓库根层瞎猜。**
+
+## 存储位置（任何写入前必读）
+
+> 一句话：**路径先解析再写；解析失败就停下问用户；绝不往仓库根层扔文件。**
+
+| 写入对象 | 目标路径 | 解析方式 |
+|:---|:---|:---|
+| 课程笔记 | `<VAULT_ROOT>/<课程目录>/` | `路径解析.note_dir("课程目录", ensure=True)` |
+| 会话记忆（本技能产生） | `<项目根>/.workbuddy/memory/sessions/session-memory.jsonl` | `路径解析.memory_file("project")`，**必须带 `skill=<本技能名>`** |
+| 全局记忆（跨项目结论） | `~/.workbuddy/memory/sessions/session-memory.jsonl` | `路径解析.memory_file("global")` |
+| 技能归属副本 | `skills/<本技能名>/memory/session-memory.jsonl` | `路径解析.skill_memory_file("<本技能名>")` |
+
+三条硬规则：
+
+1. **只保存本技能产生的会话** —— 写会话记忆时必须带 `skill` 字段。没有它就分不清这条会话属于谁，版本迁移时也无法定向搬运。
+2. **禁止写入 `.env` / `config.json` / `users.db`** —— 这些是配置与密钥文件，且被 `.gitignore` 排除，写进去必然丢失。
+3. **版本迁移时** 把 `session-memory.jsonl` 整体复制到新环境同路径，再跑一次 `session_logger.migrate_legacy()` 做去重合并（按 `ts` + `text` 去重，不覆盖、不删除）。
+
 
 > **【转正声明】** 本文件为《黄帝内经》Skill 的"思想凝固+对话模式"精装修正式版（2026年用户确认转正，上线运行，按用户反馈迭代）。改动（细则见 `课程流程.md`）：
 > 1. **定点循环原则**：材料环节（原文/白话/字词/哲学关联/多注家）直出不循环；循环只发生在哲学思辨层（主）与鉴别层（次）；概念层压缩为快速确认、应用层轻量化、临床指导降级为"带一嘴"——不做全局贯穿化（哲学内容不百分百照搬意义系统）
@@ -415,7 +435,7 @@ description: "中医黄帝内经学习导师。Invoke when user wants to learn H
 
 ### 笔记保存位置
 
-- **学习笔记目录**：`../03-黄帝内经（正课）/`
+- **学习笔记目录**：`<VAULT_ROOT>/03-黄帝内经（正课）/`
 - **进度追踪文件**：`进度追踪.md`
 
 ---
@@ -587,7 +607,7 @@ description: "中医黄帝内经学习导师。Invoke when user wants to learn H
 
 ### 课程结束时
 
-1. **创建课程记录**：创建新的笔记文件，保存到 `../03-黄帝内经（正课）/` 目录
+1. **创建课程记录**：创建新的笔记文件，保存到 `<VAULT_ROOT>/03-黄帝内经（正课）/` 目录
 2. **更新进度追踪**：更新 `进度追踪.md`
    - 课次计数器+1
    - 更新当前学习位置
