@@ -3,6 +3,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/William84132/tcm-ai-tutor?style=for-the-badge&label=最新版本)
 ![GitHub Downloads](https://img.shields.io/github/downloads/William84132/tcm-ai-tutor/total?style=for-the-badge&label=累计下载)
 [![GitHub Releases](https://img.shields.io/badge/📦-下载与更新日志-2ea44f?style=for-the-badge)](https://github.com/William84132/tcm-ai-tutor/releases)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/许可证-CC%20BY--NC%204.0%20禁商用-8A2BE2?style=for-the-badge)](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)
 
 > 一套"开箱即用"的中医经典学习系统：**四模块递进**（黄帝内经精读（道）→ 经典基础（术中之道）→ 诊疗基础（案例驱动桥）→ 经典临床（术中之术，伤寒+金匮+温病三书合一）），以《黄帝内经》为理论根基，六经八纲为教学框架（脚手架，非唯一真理），配合 20 余位医家多学派视角 + 真实医案 + 意义系统教学法实现深度学习。
 >
